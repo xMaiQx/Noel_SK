@@ -1,0 +1,405 @@
+{
+  "name": "Noel_Knowledge_Repository",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "noel",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ytE8nRojJHqxYk1K",
+          "name": "Workflow_Notion_API_Wrapper"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse incoming Noel request and extract endpoint\nconst input = $input.first().json;\n// Webhook wraps POST data in .body property\nconst requestData = input.body || input;\nconst endpoint = requestData.endpoint || 'unknown';\n\nreturn [{\n  json: {\n    endpoint: endpoint,\n    payload: requestData\n  }\n}];"
+      },
+      "name": "Parse Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "capture_learning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "update_learning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "query_learnings",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "start_session",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "end_session",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "list_sessions",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "list_projects",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "query_feedback",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Route Endpoint",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [2000, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Capture Learning - Prepare Notion payload\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Build Notion page properties\nconst properties = {\n  'Title': {\n    title: [{ text: { content: payload.title || 'Untitled Learning' } }]\n  },\n  'Type': {\n    select: { name: payload.type || 'technical' }\n  },\n  'Content': {\n    rich_text: [{ text: { content: payload.content || '' } }]\n  },\n  'Context': {\n    rich_text: [{ text: { content: payload.context || '' } }]\n  },\n  'Confidence': {\n    select: { name: payload.confidence || 'medium' }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'Timestamp': {\n    date: { start: now }\n  },\n  'Last Modified': {\n    date: { start: now }\n  },\n  'AI Suggested': {\n    checkbox: payload.ai_suggested || false\n  },\n  'AI Accepted': {\n    checkbox: false\n  }\n};\n\n// Add optional fields\nif (payload.dev_stream && Array.isArray(payload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: payload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (payload.tags && Array.isArray(payload.tags)) {\n  properties['Tags'] = {\n    multi_select: payload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (payload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: payload.related_files } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Project'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\n// Session relation (requires page ID)\nif (payload.session_id) {\n  properties['Session'] = {\n    relation: [{ id: payload.session_id }]\n  };\n}\n\nreturn [{\n  json: {\n    title: payload.title,\n    notion_payload: {\n      parent: { data_source_id: '2b23d603-acb6-8001-983a-000b5df4e3b7' },\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Capture Learning Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, -300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update Learning - Step 1: Query Notion to find page by Title\nconst payload = $input.first().json.payload;\n\n// Query by Title field (title property uses different filter syntax)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-8001-983a-000b5df4e3b7'\n    },\n    body: {\n      filter: {\n        property: 'Title',\n        title: {\n          equals: payload.title\n        }\n      },\n      page_size: 1\n    },\n    update_payload: payload  // Store for next step\n  }\n}];"
+      },
+      "name": "Update Learning Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, -150]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Query Learnings - Vector search with OpenAI + Supabase\nconst payload = $input.first().json.payload;\n\n// Configuration (hardcoded - would come from env in production)\nconst OPENAI_API_KEY = 'OPENAI_API_KEY_REDACTED';\nconst SUPABASE_URL = 'https://sladetzgpogodrqwfamy.supabase.co';\nconst SUPABASE_ANON_KEY = 'SUPABASE_KEY_REDACTED';\n\nconst query = payload.query;\nconst limit = payload.limit || 5;\nconst project = payload.project || null;\n\ntry {\n  // Step 1: Generate embedding from OpenAI\n  const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      'Authorization': `Bearer ${OPENAI_API_KEY}`\n    },\n    body: JSON.stringify({\n      model: 'text-embedding-3-small',\n      input: query\n    })\n  });\n\n  if (!embeddingResponse.ok) {\n    throw new Error(`OpenAI API error: ${embeddingResponse.status}`);\n  }\n\n  const embeddingData = await embeddingResponse.json();\n  const embedding = embeddingData.data[0].embedding;\n\n  // Step 2: Search Supabase with vector similarity\n  // Build the RPC call for vector search\n  const supabaseBody = {\n    query_embedding: embedding,\n    match_count: limit,\n    project_filter: project\n  };\n\n  const searchResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/match_learnings`, {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      'apikey': SUPABASE_ANON_KEY,\n      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`\n    },\n    body: JSON.stringify(supabaseBody)\n  });\n\n  if (!searchResponse.ok) {\n    throw new Error(`Supabase API error: ${searchResponse.status}`);\n  }\n\n  const results = await searchResponse.json();\n\n  return [{\n    json: {\n      success: true,\n      query: query,\n      results: results,\n      count: results.length\n    }\n  }];\n\n} catch (error) {\n  return [{\n    json: {\n      success: false,\n      error: error.message,\n      query: query\n    }\n  }];\n}"
+      },
+      "name": "Query Learnings Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Start Session - Generate Session ID and prepare Notion payload\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Generate Session ID: YYYYMMDD-HHMM-project\nconst date = new Date();\nconst dateStr = date.toISOString().slice(0,10).replace(/-/g, '');\nconst timeStr = date.toISOString().slice(11,16).replace(/:/g, '');\nconst projectSlug = (payload.project || 'unknown').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20);\nconst sessionId = `${dateStr}-${timeStr}-${projectSlug}`;\n\n// Build Notion page properties\nconst properties = {\n  'Session ID': {\n    title: [{ text: { content: sessionId } }]\n  },\n  'Goals': {\n    rich_text: [{ text: { content: payload.goals || '' } }]\n  },\n  'Start Time': {\n    date: { start: now }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'AI Type': {\n    select: { name: payload.ai_type || 'Claude' }\n  },\n  'Recording Format': {\n    select: { name: payload.recording_format || 'asciinema' }\n  }\n};\n\n// Add recording file path if provided\nif (payload.recording_file_path) {\n  properties['Recording File Path'] = {\n    rich_text: [{ text: { content: payload.recording_file_path } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Projects'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\nreturn [{\n  json: {\n    session_id: sessionId,\n    notion_payload: {\n      parent: { data_source_id: '2b43d603-acb6-8064-82f9-000b343a2e1c' },\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Start Session Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 150]
+    },
+    {
+      "parameters": {
+        "jsCode": "// End Session - Step 1: Query Notion to find session by Session ID\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Query by Session ID (title field)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: {\n      filter: {\n        property: 'Session ID',\n        title: {\n          equals: payload.session_id\n        }\n      },\n      page_size: 1\n    },\n    end_time: now,\n    session_id: payload.session_id\n  }\n}];"
+      },
+      "name": "End Session Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// List Sessions - Query sessions database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: body\n  }\n}];"
+      },
+      "name": "List Sessions Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 450]
+    },
+    {
+      "parameters": {
+        "jsCode": "// List Projects - Query projects database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-80df-9e44-000bdb264067'\n    },\n    body: body\n  }\n}];"
+      },
+      "name": "List Projects Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Query Feedback - Store feedback in Supabase\nconst payload = $input.first().json.payload;\n\n// Configuration\nconst SUPABASE_URL = 'https://sladetzgpogodrqwfamy.supabase.co';\nconst SUPABASE_ANON_KEY = 'SUPABASE_KEY_REDACTED';\n\nconst queryText = payload.query_text;\nconst learningIds = payload.learning_ids || [];\n\ntry {\n  // Insert feedback into Supabase\n  const response = await fetch(`${SUPABASE_URL}/rest/v1/query_feedback`, {\n    method: 'POST',\n    headers: {\n      'Content-Type': 'application/json',\n      'apikey': SUPABASE_ANON_KEY,\n      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,\n      'Prefer': 'return=representation'\n    },\n    body: JSON.stringify({\n      query_text: queryText,\n      relevant_learning_ids: learningIds\n    })\n  });\n\n  if (!response.ok) {\n    throw new Error(`Supabase API error: ${response.status}`);\n  }\n\n  const result = await response.json();\n\n  return [{\n    json: {\n      success: true,\n      message: 'Feedback stored successfully',\n      feedback_id: result[0]?.id,\n      query_text: queryText,\n      learning_count: learningIds.length\n    }\n  }];\n\n} catch (error) {\n  return [{\n    json: {\n      success: false,\n      error: error.message,\n      query_text: queryText\n    }\n  }];\n}"
+      },
+      "name": "Query Feedback Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 750]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Call Notion API wrapper to create page\nconst input = $input.first().json;\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null\n    },\n    body: input.notion_payload\n  }\n}];"
+      },
+      "name": "Prepare Create Page Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, -300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 2: Extract page_id from query result and prepare update\nconst input = $input.first().json;\nconst updatePayload = $('Update Learning Logic').first().json.update_payload;\nconst now = new Date().toISOString();\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Learning ID not found: ${updatePayload.learning_id}`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'Last Modified': {\n    date: { start: now }\n  }\n};\n\n// Update only provided fields\nif (updatePayload.title) {\n  properties['Title'] = {\n    title: [{ text: { content: updatePayload.title } }]\n  };\n}\n\nif (updatePayload.type) {\n  properties['Type'] = {\n    select: { name: updatePayload.type }\n  };\n}\n\nif (updatePayload.content) {\n  properties['Content'] = {\n    rich_text: [{ text: { content: updatePayload.content } }]\n  };\n}\n\nif (updatePayload.context) {\n  properties['Context'] = {\n    rich_text: [{ text: { content: updatePayload.context } }]\n  };\n}\n\nif (updatePayload.confidence) {\n  properties['Confidence'] = {\n    select: { name: updatePayload.confidence }\n  };\n}\n\nif (updatePayload.status) {\n  properties['Status'] = {\n    select: { name: updatePayload.status }\n  };\n}\n\nif (updatePayload.dev_stream && Array.isArray(updatePayload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: updatePayload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (updatePayload.tags && Array.isArray(updatePayload.tags)) {\n  properties['Tags'] = {\n    multi_select: updatePayload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (updatePayload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: updatePayload.related_files } }]\n  };\n}\n\nif (updatePayload.ai_accepted !== undefined) {\n  properties['AI Accepted'] = {\n    checkbox: updatePayload.ai_accepted\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Prepare Update Page Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, -150]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 2: Extract page_id from query result and prepare session update\nconst input = $input.first().json;\nconst endSessionData = $('End Session Logic').first().json;\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Session not found: ${endSessionData.session_id}`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'End Time': {\n    date: { start: endSessionData.end_time }\n  },\n  'Status': {\n    select: { name: 'Completed' }\n  }\n};\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Prepare End Session Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        }
+      },
+      "name": "Call Notion API Wrapper (Query)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [800, -150]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        }
+      },
+      "name": "Call Notion API Wrapper (End Session Query)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        }
+      },
+      "name": "Call Notion API Wrapper",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [1400, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format successful response\nconst input = $input.first().json;\n\nlet response = {\n  success: true,\n  data: input\n};\n\n// Extract title or session_id from created page if present\nif (input.id && input.properties) {\n  // This is a Notion page response\n  if (input.properties['Title']) {\n    response.title = input.properties['Title'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Learning \"${response.title}\" created successfully`;\n  } else if (input.properties['Session ID']) {\n    response.session_id = input.properties['Session ID'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Session ${response.session_id} started successfully`;\n  } else {\n    response.message = 'Updated successfully';\n  }\n} else if (input.results) {\n  // This is a query result\n  response.count = input.results.length;\n  response.message = `Retrieved ${response.count} items`;\n} else {\n  response.message = 'Operation completed';\n}\n\nreturn [{ json: response }];"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1700, 200]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Parse Request", "type": "main", "index": 0 }]]
+    },
+    "Parse Request": {
+      "main": [[{ "node": "Route Endpoint", "type": "main", "index": 0 }]]
+    },
+    "Route Endpoint": {
+      "main": [
+        [{ "node": "Capture Learning Logic", "type": "main", "index": 0 }],
+        [{ "node": "Update Learning Logic", "type": "main", "index": 0 }],
+        [{ "node": "Query Learnings Logic", "type": "main", "index": 0 }],
+        [{ "node": "Start Session Logic", "type": "main", "index": 0 }],
+        [{ "node": "End Session Logic", "type": "main", "index": 0 }],
+        [{ "node": "List Sessions Logic", "type": "main", "index": 0 }],
+        [{ "node": "List Projects Logic", "type": "main", "index": 0 }],
+        [{ "node": "Query Feedback Logic", "type": "main", "index": 0 }]
+      ]
+    },
+    "Capture Learning Logic": {
+      "main": [[{ "node": "Prepare Create Page Call", "type": "main", "index": 0 }]]
+    },
+    "Update Learning Logic": {
+      "main": [[{ "node": "Call Notion API Wrapper (Query)", "type": "main", "index": 0 }]]
+    },
+    "Call Notion API Wrapper (Query)": {
+      "main": [[{ "node": "Prepare Update Page Call", "type": "main", "index": 0 }]]
+    },
+    "Query Learnings Logic": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    },
+    "Start Session Logic": {
+      "main": [[{ "node": "Prepare Create Page Call", "type": "main", "index": 0 }]]
+    },
+    "End Session Logic": {
+      "main": [[{ "node": "Call Notion API Wrapper (End Session Query)", "type": "main", "index": 0 }]]
+    },
+    "Call Notion API Wrapper (End Session Query)": {
+      "main": [[{ "node": "Prepare End Session Call", "type": "main", "index": 0 }]]
+    },
+    "Prepare End Session Call": {
+      "main": [[{ "node": "Call Notion API Wrapper", "type": "main", "index": 0 }]]
+    },
+    "List Sessions Logic": {
+      "main": [[{ "node": "Call Notion API Wrapper", "type": "main", "index": 0 }]]
+    },
+    "List Projects Logic": {
+      "main": [[{ "node": "Call Notion API Wrapper", "type": "main", "index": 0 }]]
+    },
+    "Query Feedback Logic": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    },
+    "Prepare Create Page Call": {
+      "main": [[{ "node": "Call Notion API Wrapper", "type": "main", "index": 0 }]]
+    },
+    "Prepare Update Page Call": {
+      "main": [[{ "node": "Call Notion API Wrapper", "type": "main", "index": 0 }]]
+    },
+    "Call Notion API Wrapper": {
+      "main": [[{ "node": "Format Response", "type": "main", "index": 0 }]]
+    },
+    "Format Response": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null
+}

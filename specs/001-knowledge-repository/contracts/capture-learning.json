@@ -1,0 +1,249 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Capture Learning API",
+    "description": "Store new learning with AI enrichment in the knowledge repository",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/capture_learning": {
+      "post": {
+        "summary": "Capture a new learning",
+        "description": "Store a development learning with optional AI enrichment. Creates project if it doesn't exist. Generates unique learning ID. Stores in Notion and generates vector embedding for search.",
+        "operationId": "captureLearning",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptureLearningRequest"
+              },
+              "examples": {
+                "minimal": {
+                  "summary": "Minimal required fields",
+                  "value": {
+                    "project": "Noel",
+                    "title": "Webhook response time optimization",
+                    "content": "Implemented caching for AI enrichment results, reducing response time from 5s to 2s"
+                  }
+                },
+                "complete": {
+                  "summary": "All fields provided",
+                  "value": {
+                    "project": "Briseno",
+                    "type": "Pattern",
+                    "dev_stream": ["n8n", "Architecture"],
+                    "title": "Multi-agent coordinator pattern",
+                    "content": "When orchestrating multiple agents, use a coordinator workflow that manages state and routes requests. Benefits: centralized error handling, easier debugging, clear communication paths.",
+                    "context": "Discovered while refactoring agent communication logic after encountering race conditions",
+                    "tags": ["n8n", "agents", "coordinator-pattern"],
+                    "confidence": "High",
+                    "session_id": "SESSION-20251120-001",
+                    "related_files": "workflows/coordinator.json"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Learning captured successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaptureLearningResponse"
+                },
+                "example": {
+                  "success": true,
+                  "learning_id": "BR-024",
+                  "ai_enrichment": {
+                    "dev_streams_suggested": ["n8n", "Architecture"],
+                    "type_suggested": "Pattern",
+                    "tags_suggested": ["coordinator", "multi-agent", "state-management"]
+                  },
+                  "message": "Learning captured successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Validation failed",
+                  "details": {
+                    "project": "Required field missing",
+                    "title": "Must be between 5 and 200 characters"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal server error",
+                  "message": "Failed to store learning. Please try again."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CaptureLearningRequest": {
+        "type": "object",
+        "required": ["project", "title", "content"],
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project name (auto-creates if doesn't exist)",
+            "minLength": 1,
+            "maxLength": 100,
+            "example": "Noel"
+          },
+          "title": {
+            "type": "string",
+            "description": "Short descriptive title",
+            "minLength": 5,
+            "maxLength": 200,
+            "example": "Webhook response time optimization"
+          },
+          "content": {
+            "type": "string",
+            "description": "Full learning content (supports markdown)",
+            "minLength": 10,
+            "maxLength": 50000,
+            "example": "When implementing webhook endpoints, cache AI enrichment results..."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Pattern", "Solution", "Error", "Decision", "Insight", "Anti-Pattern", "Best Practice"],
+            "description": "Learning type (AI will suggest if not provided)"
+          },
+          "dev_stream": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["Back-end", "Front-end", "UI/UX", "n8n", "Database", "API", "DevOps", "Architecture", "Performance", "Security"]
+            },
+            "description": "Development domains (AI will suggest if not provided)"
+          },
+          "context": {
+            "type": "string",
+            "description": "How the learning was discovered",
+            "maxLength": 5000
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keywords for filtering (AI will suggest additional)"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["High", "Medium", "Low"],
+            "default": "Medium",
+            "description": "Confidence in learning accuracy"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^SESSION-\\d{8}-\\d{3}$",
+            "description": "Associated session ID (optional)"
+          },
+          "related_files": {
+            "type": "string",
+            "description": "File paths or references"
+          }
+        }
+      },
+      "CaptureLearningResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "learning_id": {
+            "type": "string",
+            "description": "Generated unique identifier",
+            "example": "NOEL-045"
+          },
+          "ai_enrichment": {
+            "type": "object",
+            "properties": {
+              "dev_streams_suggested": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type_suggested": {
+                "type": "string"
+              },
+              "tags_suggested": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "message": {
+            "type": "string",
+            "example": "Learning captured successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "Noel Knowledge Repository",
+    "description": "Test endpoints for Noel workflow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://9e527c57b6c1.ngrok-free.app/webhook/noel",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Capture Learning",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"capture_learning\",\n  \"project\": \"Noel_SK\",\n  \"title\": \"Test Learning from Postman\",\n  \"type\": \"pattern\",\n  \"content\": \"This is a test learning captured via Postman\",\n  \"context\": \"Testing the Noel API endpoints manually\",\n  \"dev_stream\": [\"Testing\", \"API\"],\n  \"tags\": [\"postman\", \"test\", \"manual\"],\n  \"confidence\": \"high\",\n  \"ai_suggested\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "2. Update Learning",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"update_learning\",\n  \"title\": \"Test Learning from Postman\",\n  \"status\": \"verified\",\n  \"tags\": [\"postman\", \"test\", \"updated\"],\n  \"ai_accepted\": true\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "3. Query Learnings (Not Implemented)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"query_learnings\",\n  \"query\": \"How does Noel workflow work?\",\n  \"project\": \"Noel_SK\",\n  \"limit\": 5\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "4. Start Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"start_session\",\n  \"project\": \"Noel_SK\",\n  \"goals\": \"Test Noel endpoints via Postman\",\n  \"ai_type\": \"Claude\",\n  \"recording_format\": \"markdown\",\n  \"recording_file_path\": \"/tmp/postman-test-session.md\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "5. End Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"end_session\",\n  \"session_id\": \"PASTE_SESSION_ID_HERE\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "6. List Sessions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"list_sessions\",\n  \"limit\": 10,\n  \"status\": \"Active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "7. List Projects",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"list_projects\",\n  \"limit\": 10,\n  \"status\": \"Active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    },
+    {
+      "name": "8. Query Feedback (Not Implemented)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "{{auth_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"endpoint\": \"query_feedback\",\n  \"query_id\": \"test-query-123\",\n  \"learning_ids\": [\"20251124-0424-noel-sk-test\"],\n  \"feedback_type\": \"relevant\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}",
+          "host": ["{{base_url}}"]
+        }
+      }
+    }
+  ]
+}

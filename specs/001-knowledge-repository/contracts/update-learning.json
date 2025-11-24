@@ -1,0 +1,219 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Update Learning API",
+    "description": "Update an existing learning with new content or metadata",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/update_learning": {
+      "post": {
+        "summary": "Update an existing learning",
+        "description": "Update learning content, metadata, or status. Preserves original timestamp and adds last_modified timestamp. Regenerates vector embedding if content changes.",
+        "operationId": "updateLearning",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLearningRequest"
+              },
+              "examples": {
+                "content_update": {
+                  "summary": "Update learning content",
+                  "value": {
+                    "learning_id": "BR-023",
+                    "content": "Updated content with additional insights discovered during implementation..."
+                  }
+                },
+                "status_transition": {
+                  "summary": "Validate a hypothesis",
+                  "value": {
+                    "learning_id": "NOEL-012",
+                    "status": "Validated",
+                    "confidence": "High"
+                  }
+                },
+                "deprecate_learning": {
+                  "summary": "Deprecate outdated learning",
+                  "value": {
+                    "learning_id": "BR-001",
+                    "status": "Deprecated",
+                    "context": "Superseded by new approach in BR-045"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Learning updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateLearningResponse"
+                },
+                "example": {
+                  "success": true,
+                  "learning_id": "BR-023",
+                  "last_modified": "2025-11-20T15:30:00Z",
+                  "embedding_regenerated": true,
+                  "message": "Learning updated successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed or invalid status transition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "invalid_transition": {
+                    "summary": "Invalid status transition",
+                    "value": {
+                      "success": false,
+                      "error": "Invalid status transition",
+                      "message": "Cannot transition from Deprecated to Validated. Create a new learning instead."
+                    }
+                  },
+                  "learning_not_found": {
+                    "summary": "Learning ID not found",
+                    "value": {
+                      "success": false,
+                      "error": "Learning not found",
+                      "message": "No learning found with ID: BR-999"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateLearningRequest": {
+        "type": "object",
+        "required": ["learning_id"],
+        "properties": {
+          "learning_id": {
+            "type": "string",
+            "pattern": "^[A-Z]{2,4}-\\d{3}$",
+            "description": "Unique learning identifier",
+            "example": "BR-023"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 200,
+            "description": "Updated title"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 50000,
+            "description": "Updated content (triggers embedding regeneration)"
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 5000,
+            "description": "Updated context"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["Pattern", "Solution", "Error", "Decision", "Insight", "Anti-Pattern", "Best Practice"],
+            "description": "Updated learning type"
+          },
+          "dev_stream": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["Back-end", "Front-end", "UI/UX", "n8n", "Database", "API", "DevOps", "Architecture", "Performance", "Security"]
+            },
+            "description": "Updated development domains"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Updated tags"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["High", "Medium", "Low"],
+            "description": "Updated confidence level"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Validated", "Hypothesis", "Deprecated"],
+            "description": "Updated status (must follow transition rules: Hypothesis→Validated, Validated→Deprecated, NOT Deprecated→Validated)"
+          },
+          "related_files": {
+            "type": "string",
+            "description": "Updated file references"
+          }
+        }
+      },
+      "UpdateLearningResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "learning_id": {
+            "type": "string",
+            "example": "BR-023"
+          },
+          "last_modified": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-20T15:30:00Z"
+          },
+          "embedding_regenerated": {
+            "type": "boolean",
+            "description": "True if content changed and embedding was regenerated",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Learning updated successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

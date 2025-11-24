@@ -1,0 +1,146 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Query Feedback API",
+    "description": "Submit feedback on query relevance for metrics tracking",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/query_feedback": {
+      "post": {
+        "summary": "Submit query relevance feedback",
+        "description": "Submit feedback indicating which learnings were relevant to a query for metrics and search quality improvement.",
+        "operationId": "queryFeedback",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryFeedbackRequest"
+              },
+              "examples": {
+                "single_result": {
+                  "summary": "One relevant learning",
+                  "value": {
+                    "query": "How to debug n8n workflows?",
+                    "relevant_learning_ids": ["BR-023"]
+                  }
+                },
+                "multiple_results": {
+                  "summary": "Multiple relevant learnings",
+                  "value": {
+                    "query": "error handling patterns",
+                    "relevant_learning_ids": ["BR-023", "NOEL-012", "BR-045"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryFeedbackResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Thank you for the feedback! This helps improve search quality."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Validation failed",
+                  "details": {
+                    "query": "Required field missing",
+                    "relevant_learning_ids": "Must be non-empty array"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "QueryFeedbackRequest": {
+        "type": "object",
+        "required": ["query", "relevant_learning_ids"],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Original query text that was submitted",
+            "minLength": 3,
+            "maxLength": 500,
+            "example": "How to debug n8n workflows?"
+          },
+          "relevant_learning_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2,4}-\\d{3}$"
+            },
+            "minItems": 1,
+            "description": "Array of learning IDs that were relevant to the query",
+            "example": ["BR-023", "NOEL-012"]
+          }
+        }
+      },
+      "QueryFeedbackResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Thank you for the feedback! This helps improve search quality."
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

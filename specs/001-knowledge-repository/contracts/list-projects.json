@@ -1,0 +1,181 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "List Projects API",
+    "description": "Retrieve project catalog with optional filters",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/list_projects": {
+      "post": {
+        "summary": "List all projects",
+        "description": "Retrieve project catalog with learning counts, session counts, and metadata. Supports filtering by status, priority, and tech stack.",
+        "operationId": "listProjects",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListProjectsRequest"
+              },
+              "examples": {
+                "all": {
+                  "summary": "List all projects",
+                  "value": {}
+                },
+                "filtered": {
+                  "summary": "Filter by status and priority",
+                  "value": {
+                    "filters": {
+                      "status": "Active",
+                      "priority": "P1-High"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Projects retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListProjectsResponse"
+                },
+                "example": {
+                  "success": true,
+                  "projects": [
+                    {
+                      "name": "Noel",
+                      "status": "Active",
+                      "priority": "P1-High",
+                      "tech_stack": ["n8n", "Notion", "Supabase", "OpenAI"],
+                      "description": "Knowledge repository system",
+                      "started": "2025-11-20",
+                      "last_activity": "2025-11-20",
+                      "learning_count": 12,
+                      "session_count": 3,
+                      "total_session_hours": 4.5
+                    }
+                  ],
+                  "count": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ListProjectsRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": ["Active", "On Hold", "Planning", "Completed", "Archived"]
+              },
+              "priority": {
+                "type": "string",
+                "enum": ["P0-Critical", "P1-High", "P2-Medium", "P3-Low"]
+              },
+              "tech_stack": {
+                "type": "string",
+                "description": "Filter by technology (matches any in array)"
+              }
+            }
+          }
+        }
+      },
+      "ListProjectsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Project"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Noel"
+          },
+          "status": {
+            "type": "string",
+            "example": "Active"
+          },
+          "priority": {
+            "type": "string",
+            "example": "P1-High"
+          },
+          "tech_stack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["n8n", "Notion", "Supabase"]
+          },
+          "description": {
+            "type": "string",
+            "example": "Knowledge repository system"
+          },
+          "started": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-11-20"
+          },
+          "last_activity": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-11-20"
+          },
+          "learning_count": {
+            "type": "integer",
+            "description": "Number of non-deprecated learnings",
+            "example": 12
+          },
+          "session_count": {
+            "type": "integer",
+            "example": 3
+          },
+          "total_session_hours": {
+            "type": "number",
+            "format": "float",
+            "description": "Cumulative session duration in hours",
+            "example": 4.5
+          }
+        }
+      }
+    }
+  }
+}

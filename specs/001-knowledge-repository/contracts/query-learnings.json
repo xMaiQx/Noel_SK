@@ -1,0 +1,259 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Query Learnings API",
+    "description": "Semantic search across learnings with optional filters",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/query_learnings": {
+      "post": {
+        "summary": "Query learnings with semantic search",
+        "description": "Search for relevant learnings using natural language. Returns top 10 most similar learnings ranked by cosine similarity. Excludes deprecated learnings by default.",
+        "operationId": "queryLearnings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryLearningsRequest"
+              },
+              "examples": {
+                "simple": {
+                  "summary": "Simple query without filters",
+                  "value": {
+                    "query": "How to debug n8n workflows?"
+                  }
+                },
+                "filtered": {
+                  "summary": "Query with project and dev stream filters",
+                  "value": {
+                    "query": "error handling patterns",
+                    "filters": {
+                      "project": "Briseno",
+                      "dev_stream": "n8n",
+                      "confidence": "High"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Query successful (includes empty results)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryLearningsResponse"
+                },
+                "example": {
+                  "success": true,
+                  "results": [
+                    {
+                      "learning_id": "BR-023",
+                      "title": "n8n error handling with try-catch nodes",
+                      "project": "Briseno",
+                      "type": "Pattern",
+                      "dev_stream": ["n8n", "Architecture"],
+                      "confidence": "High",
+                      "status": "Validated",
+                      "content_excerpt": "When handling errors in n8n workflows, use the 'Stop and Error' trigger combined with...",
+                      "similarity_score": 0.87
+                    }
+                  ],
+                  "count": 1,
+                  "query_time_ms": 243
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Validation failed",
+                  "details": {
+                    "query": "Query must be between 3 and 500 characters"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "QueryLearningsRequest": {
+        "type": "object",
+        "required": ["query"],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural language search query",
+            "minLength": 3,
+            "maxLength": 500,
+            "example": "How to debug n8n workflows?"
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "string",
+                "description": "Filter by specific project"
+              },
+              "dev_stream": {
+                "type": "string",
+                "enum": ["Back-end", "Front-end", "UI/UX", "n8n", "Database", "API", "DevOps", "Architecture", "Performance", "Security"],
+                "description": "Filter by development domain"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["Pattern", "Solution", "Error", "Decision", "Insight", "Anti-Pattern", "Best Practice"],
+                "description": "Filter by learning type"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Filter by tags (AND logic)"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": ["High", "Medium", "Low"],
+                "description": "Filter by confidence level"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Validated", "Hypothesis", "Deprecated"],
+                "description": "Filter by status (default excludes Deprecated)"
+              }
+            }
+          }
+        }
+      },
+      "QueryLearningsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LearningResult"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of results returned",
+            "example": 3
+          },
+          "query_time_ms": {
+            "type": "integer",
+            "description": "Query execution time in milliseconds",
+            "example": 243
+          }
+        }
+      },
+      "LearningResult": {
+        "type": "object",
+        "properties": {
+          "learning_id": {
+            "type": "string",
+            "example": "BR-023"
+          },
+          "title": {
+            "type": "string",
+            "example": "Error handling pattern for n8n"
+          },
+          "project": {
+            "type": "string",
+            "example": "Briseno"
+          },
+          "type": {
+            "type": "string",
+            "example": "Pattern"
+          },
+          "dev_stream": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["n8n", "Architecture"]
+          },
+          "confidence": {
+            "type": "string",
+            "example": "High"
+          },
+          "status": {
+            "type": "string",
+            "example": "Validated"
+          },
+          "content_excerpt": {
+            "type": "string",
+            "description": "First 200 characters of content",
+            "example": "When handling errors in n8n workflows..."
+          },
+          "similarity_score": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Cosine similarity (0-1, higher is more similar)",
+            "example": 0.87
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

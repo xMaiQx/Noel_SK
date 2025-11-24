@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "End Session API",
+    "description": "Complete an active coding session",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/end_session": {
+      "post": {
+        "summary": "End an active session",
+        "description": "Mark session as completed with end timestamp. Calculates total duration. Returns session summary with learning count.",
+        "operationId": "endSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndSessionRequest"
+              },
+              "example": {
+                "session_id": "SESSION-20251120-001"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session ended successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndSessionResponse"
+                },
+                "example": {
+                  "success": true,
+                  "session_id": "SESSION-20251120-001",
+                  "start_time": "2025-11-20T09:00:00Z",
+                  "end_time": "2025-11-20T11:30:00Z",
+                  "duration_minutes": 150,
+                  "status": "Completed",
+                  "learning_count": 3,
+                  "message": "Session ended successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Invalid session",
+                  "message": "Session not found or already completed"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EndSessionRequest": {
+        "type": "object",
+        "required": ["session_id"],
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "pattern": "^SESSION-\\d{8}-\\d{3}$",
+            "description": "Session identifier to end",
+            "example": "SESSION-20251120-001"
+          }
+        }
+      },
+      "EndSessionResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "session_id": {
+            "type": "string",
+            "example": "SESSION-20251120-001"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-20T09:00:00Z"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-20T11:30:00Z"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "description": "Total session duration in minutes",
+            "example": 150
+          },
+          "status": {
+            "type": "string",
+            "example": "Completed"
+          },
+          "learning_count": {
+            "type": "integer",
+            "description": "Number of learnings captured during session",
+            "example": 3
+          },
+          "message": {
+            "type": "string",
+            "example": "Session ended successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

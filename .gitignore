@@ -1,0 +1,117 @@
+# Noel Knowledge Repository - Git Ignore File
+# Tech Stack: n8n, Notion, Supabase, OpenAI, Node.js
+
+# Node.js / JavaScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npm
+.yarn/
+
+# n8n
+.n8n/
+n8n.db
+n8n-config/
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+credentials.json
+secrets/
+config/credentials/
+
+# API Keys and tokens (be extra careful)
+**/api-keys/**
+**/tokens/**
+notion-token.txt
+openai-key.txt
+supabase-key.txt
+
+# Session recordings (optional - consider if you want to track these)
+# Uncomment if you don't want to version control session recordings
+# coding-sessions/
+# *.cast
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+.sublime-project
+.sublime-workspace
+
+# Build and distribution
+dist/
+build/
+out/
+tmp/
+temp/
+.cache/
+
+# Testing
+coverage/
+.nyc_output/
+*.test.js.snap
+
+# Backup files
+*.bak
+*.backup
+*.old
+*~
+
+# Database dumps (if you create local backups)
+*.sql
+*.dump
+backups/
+
+# Notion exports (if you do manual exports)
+notion-exports/
+*.csv
+
+# Documentation builds (if using tools like MkDocs)
+site/
+docs/_build/
+
+# Python (if you add Python scripts later)
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+ENV/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+.tmp/

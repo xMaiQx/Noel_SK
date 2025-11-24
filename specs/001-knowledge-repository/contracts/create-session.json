@@ -1,0 +1,177 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Create Session API",
+    "description": "Start a new coding session with recording",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/create_session": {
+      "post": {
+        "summary": "Create a new session",
+        "description": "Start a new coding session with goals and recording file path. Session starts with status 'Active'. Returns unique session ID for associating learnings.",
+        "operationId": "createSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              },
+              "examples": {
+                "single_project": {
+                  "summary": "Session for one project",
+                  "value": {
+                    "projects": ["Noel"],
+                    "goals": "Implement session tracking and replay functionality",
+                    "recording_file_path": "~/coding-sessions/2025-11-20-claude-noel-001.cast",
+                    "ai_type": "Claude"
+                  }
+                },
+                "multi_project": {
+                  "summary": "Session spanning multiple projects",
+                  "value": {
+                    "projects": ["Noel", "Briseno"],
+                    "goals": "Integrate knowledge repository with existing workflows",
+                    "recording_file_path": "~/coding-sessions/2025-11-20-claude-integration-001.cast",
+                    "ai_type": "Claude"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSessionResponse"
+                },
+                "example": {
+                  "success": true,
+                  "session_id": "SESSION-20251120-001",
+                  "start_time": "2025-11-20T09:00:00Z",
+                  "status": "Active",
+                  "message": "Session created successfully. Use this session_id when capturing learnings."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Validation failed",
+                  "details": {
+                    "projects": "At least one project required",
+                    "goals": "Goals must be between 10 and 1000 characters"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateSessionRequest": {
+        "type": "object",
+        "required": ["projects", "goals"],
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Projects associated with this session",
+            "example": ["Noel"]
+          },
+          "goals": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000,
+            "description": "Session objectives and context",
+            "example": "Implement session tracking and replay functionality"
+          },
+          "recording_file_path": {
+            "type": "string",
+            "description": "Path to asciinema recording file",
+            "example": "~/coding-sessions/2025-11-20-claude-noel-001.cast"
+          },
+          "ai_type": {
+            "type": "string",
+            "enum": ["Claude", "Gemini", "Other"],
+            "default": "Other",
+            "description": "AI assistant type used in session"
+          }
+        }
+      },
+      "CreateSessionResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Generated unique session identifier",
+            "example": "SESSION-20251120-001"
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-11-20T09:00:00Z"
+          },
+          "status": {
+            "type": "string",
+            "example": "Active"
+          },
+          "message": {
+            "type": "string",
+            "example": "Session created successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
