@@ -135,7 +135,7 @@ PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
 
 # When sourced:
 source scripts/setup-env.sh
-# Error: .env file not found at /Users/murodos/Documents/_Mad Panda_/Proyectos/.env
+# Error: .env file not found at /Users/murodos/Documents/_Mad_Panda_/Proyectos/.env
 # (wrong directory - went up from Documents instead of project root)
 ```
 
