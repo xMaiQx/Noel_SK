@@ -1,213 +1,469 @@
 {
   "info": {
-    "name": "Noel Knowledge Repository",
-    "description": "Test endpoints for Noel workflow",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "name": "Noel Knowledge Repository - Complete API",
+    "description": "Complete test collection for all 8 Noel API endpoints. Update {{base_url}} with your current ngrok URL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "2.0.0"
   },
   "variable": [
     {
       "key": "base_url",
-      "value": "https://9e527c57b6c1.ngrok-free.app/webhook/noel",
-      "type": "string"
+      "value": "https://272485010cfe.ngrok-free.app/webhook/noel",
+      "type": "string",
+      "description": "Update this with your current ngrok URL"
     },
     {
       "key": "auth_token",
       "value": "1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6",
-      "type": "string"
+      "type": "string",
+      "description": "Authorization token for webhook"
     }
   ],
   "item": [
     {
-      "name": "1. Capture Learning",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+      "name": "Project Management",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"list_projects\",\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Lists all projects from Notion.\n\n**Parameters:**\n- limit (optional): Max number of projects to return\n- status (optional): Filter by project status\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"count\": 1,\n  \"message\": \"Retrieved 1 items\"\n}\n```"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"capture_learning\",\n  \"project\": \"Noel_SK\",\n  \"title\": \"Test Learning from Postman\",\n  \"type\": \"pattern\",\n  \"content\": \"This is a test learning captured via Postman\",\n  \"context\": \"Testing the Noel API endpoints manually\",\n  \"dev_stream\": [\"Testing\", \"API\"],\n  \"tags\": [\"postman\", \"test\", \"manual\"],\n  \"confidence\": \"high\",\n  \"ai_suggested\": false\n}"
-        },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
         }
-      }
+      ]
     },
     {
-      "name": "2. Update Learning",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+      "name": "Learning Management",
+      "item": [
+        {
+          "name": "1. Capture Learning - Basic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"capture_learning\",\n  \"project\": \"Noel_SK\",\n  \"title\": \"Postman API Testing Pattern\",\n  \"content\": \"When testing APIs with Postman, organize requests into folders by feature area. Use collection variables for base URLs and auth tokens.\",\n  \"dev_stream\": \"Testing\",\n  \"impact\": \"Speeds up API testing and documentation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Creates a new learning with automatic embedding generation.\n\n**Required Fields:**\n- project: Project name\n- title: Learning title (becomes learning_id)\n- content: Learning content\n- dev_stream: Development area\n\n**Optional Fields:**\n- context: Additional context\n- type: Pattern/Solution/Error/Decision/Insight/Anti-Pattern/Best Practice\n- tags: Array of tags\n- confidence: High/Medium/Low\n- impact: Impact description\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"learning_id\": \"Postman API Testing Pattern\",\n  \"page_id\": \"...\",\n  \"url\": \"https://notion.so/...\",\n  \"message\": \"Learning created successfully\"\n}\n```\n\n**Note:** Embedding generation happens asynchronously (takes ~2 seconds)"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"update_learning\",\n  \"title\": \"Test Learning from Postman\",\n  \"status\": \"verified\",\n  \"tags\": [\"postman\", \"test\", \"updated\"],\n  \"ai_accepted\": true\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
+        {
+          "name": "1. Capture Learning - Complete",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"capture_learning\",\n  \"project\": \"Noel_SK\",\n  \"title\": \"Complete Learning Example\",\n  \"content\": \"This example shows all available fields for capturing a learning. The content field supports markdown formatting and should describe the learning in detail.\",\n  \"context\": \"Created during Postman collection testing to demonstrate full API capabilities.\",\n  \"type\": \"Pattern\",\n  \"dev_stream\": \"API\",\n  \"tags\": [\"postman\", \"api\", \"example\", \"documentation\"],\n  \"confidence\": \"High\",\n  \"impact\": \"Provides complete reference for API consumers\",\n  \"related_files\": \"n8n-workflows/Noel_Postman_Collection.json\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Example with all optional fields populated."
+          }
+        },
+        {
+          "name": "2. Query Learnings - Simple",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"query_learnings\",\n  \"query\": \"How to test APIs with Postman?\",\n  \"limit\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Performs semantic search across all learnings.\n\n**Parameters:**\n- query (required): Natural language search query\n- limit (optional, default=5): Max results to return\n- project (optional): Filter by project\n\n**How it works:**\n1. Query is converted to embedding via OpenAI\n2. Vector similarity search in Supabase\n3. Results ranked by cosine similarity\n4. Returns learning content + metadata\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"query\": \"How to test APIs with Postman?\",\n  \"count\": 2,\n  \"results\": [\n    {\n      \"learning_id\": \"Postman API Testing Pattern\",\n      \"content\": \"...\",\n      \"similarity\": 0.8234,\n      \"metadata\": {\n        \"title\": \"Postman API Testing Pattern\",\n        \"project\": \"Noel_SK\",\n        \"dev_stream\": \"Testing\",\n        \"tags\": [\"postman\", \"api\"],\n        \"confidence\": \"High\"\n      }\n    }\n  ]\n}\n```\n\n**Note:** Similarity scores range from 0-1 (higher = more relevant)"
+          }
+        },
+        {
+          "name": "2. Query Learnings - With Project Filter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"query_learnings\",\n  \"query\": \"debugging n8n workflows\",\n  \"limit\": 10,\n  \"project\": \"Noel_SK\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Search limited to specific project."
+          }
+        },
+        {
+          "name": "3. Update Learning",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"update_learning\",\n  \"learning_id\": \"Postman API Testing Pattern\",\n  \"confidence\": \"High\",\n  \"status\": \"Validated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Updates an existing learning. Only updates fields provided.\n\n**Required:**\n- learning_id: Must match the Title in Notion exactly\n\n**Updatable Fields:**\n- title: New title\n- content: New content (triggers embedding regeneration)\n- context: Updated context\n- type: Pattern/Solution/Error/etc.\n- dev_stream: Development area\n- tags: Array of tags\n- confidence: High/Medium/Low\n- status: Validated/Hypothesis/Deprecated\n- related_files: File references\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"title\": \"Postman API Testing Pattern\",\n  \"page_id\": \"...\",\n  \"url\": \"https://notion.so/...\",\n  \"message\": \"Learning updated successfully\"\n}\n```\n\n**Important:** \n- learning_id must EXACTLY match the Notion page title\n- If content is updated, embedding is regenerated (~2 seconds)\n- Last Modified timestamp is automatically set"
+          }
+        },
+        {
+          "name": "4. Submit Query Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"query_feedback\",\n  \"query\": \"How to test APIs with Postman?\",\n  \"relevant_learning_ids\": [\n    \"Postman API Testing Pattern\",\n    \"Complete Learning Example\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Submit feedback on which learnings were relevant to a query.\n\n**Parameters:**\n- query (required): The original query text\n- relevant_learning_ids (required): Array of learning IDs that were helpful\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"message\": \"Thank you for the feedback! This helps improve search quality.\",\n  \"query\": \"How to test APIs with Postman?\",\n  \"relevant_learning_count\": 2\n}\n```\n\n**Note:** Currently returns success without storing to Supabase. Storage will be implemented via HTTP Request node."
+          }
         }
-      }
+      ]
     },
     {
-      "name": "3. Query Learnings (Not Implemented)",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+      "name": "Session Management",
+      "item": [
+        {
+          "name": "1. Start Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"start_session\",\n  \"projects\": [\"Noel_SK\"],\n  \"goals\": \"Testing Noel API via Postman - validating all endpoints work correctly\",\n  \"recording_file_path\": \"~/coding-sessions/postman-test-2025-12-15.cast\",\n  \"ai_type\": \"Claude\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Starts a new coding session.\n\n**Required:**\n- projects: Array of project names\n- goals: Session objectives (10-1000 chars)\n\n**Optional:**\n- recording_file_path: Path to asciinema recording\n- ai_type: Claude/Gemini/Other (default: Other)\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"session_id\": \"20251215-1200-noel-sk\",\n  \"page_id\": \"...\",\n  \"url\": \"https://notion.so/...\",\n  \"message\": \"Session started successfully\",\n  \"data\": {\n    \"Status\": \"Active\",\n    \"Start Time\": \"2025-12-15T12:00:00Z\",\n    \"AI Type\": \"Claude\",\n    \"Goals\": \"...\"\n  }\n}\n```\n\n**Session ID Format:** YYYYMMDD-HHMM-project"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"query_learnings\",\n  \"query\": \"How does Noel workflow work?\",\n  \"project\": \"Noel_SK\",\n  \"limit\": 5\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
+        {
+          "name": "2. List Sessions - All",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"list_sessions\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Lists all sessions from Notion.\n\n**Optional Filters:**\n- project: Filter by project name\n- status: Active/Completed/Abandoned\n- limit: Max results\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"count\": 3,\n  \"message\": \"Retrieved 3 items\",\n  \"data\": {\n    \"results\": [\n      {\n        \"Session ID\": \"20251215-1200-noel-sk\",\n        \"Status\": \"Active\",\n        \"Start Time\": \"2025-12-15T12:00:00Z\",\n        \"Goals\": \"...\",\n        \"AI Type\": \"Claude\",\n        \"Learning Count\": 5,\n        \"Duration\": 120\n      }\n    ]\n  }\n}\n```"
+          }
+        },
+        {
+          "name": "2. List Sessions - Filtered",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"list_sessions\",\n  \"filters\": {\n    \"project\": \"Noel_SK\",\n    \"status\": \"Active\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "List sessions filtered by project and status."
+          }
+        },
+        {
+          "name": "3. End Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"end_session\",\n  \"session_id\": \"20251215-1200-noel-sk\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Ends an active session and calculates duration.\n\n**Required:**\n- session_id: Session ID to end (from start_session response)\n\n**Response:**\n```json\n{\n  \"success\": true,\n  \"session_id\": \"20251215-1200-noel-sk\",\n  \"page_id\": \"...\",\n  \"url\": \"https://notion.so/...\",\n  \"message\": \"Session ended successfully\",\n  \"data\": {\n    \"Status\": \"Completed\",\n    \"End Time\": \"2025-12-15T14:00:00Z\",\n    \"Duration\": 120,\n    \"Learning Count\": 5\n  }\n}\n```\n\n**Note:** \n- Status changes from Active → Completed\n- Duration is calculated in minutes\n- Learning Count is a rollup from linked learnings"
+          }
         }
-      }
+      ]
     },
     {
-      "name": "4. Start Session",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+      "name": "Complete Workflow Example",
+      "item": [
+        {
+          "name": "Step 1: Start Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"start_session\",\n  \"projects\": [\"Noel_SK\"],\n  \"goals\": \"Complete workflow test: start session, capture learnings, query, update, end session\",\n  \"ai_type\": \"Claude\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "START HERE: Run this first to get a session_id"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"start_session\",\n  \"project\": \"Noel_SK\",\n  \"goals\": \"Test Noel endpoints via Postman\",\n  \"ai_type\": \"Claude\",\n  \"recording_format\": \"markdown\",\n  \"recording_file_path\": \"/tmp/postman-test-session.md\"\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
-        }
-      }
-    },
-    {
-      "name": "5. End Session",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+        {
+          "name": "Step 2: Capture Learning",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"capture_learning\",\n  \"project\": \"Noel_SK\",\n  \"title\": \"Workflow Test Learning 1\",\n  \"content\": \"This learning validates the complete Noel workflow from session start to end.\",\n  \"dev_stream\": \"Testing\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Wait 2-3 seconds for embedding to be generated"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"end_session\",\n  \"session_id\": \"PASTE_SESSION_ID_HERE\"\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
-        }
-      }
-    },
-    {
-      "name": "6. List Sessions",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+        {
+          "name": "Step 3: Query Learnings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"query_learnings\",\n  \"query\": \"workflow testing validation\",\n  \"limit\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Should return the learning we just created"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"list_sessions\",\n  \"limit\": 10,\n  \"status\": \"Active\"\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
-        }
-      }
-    },
-    {
-      "name": "7. List Projects",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+        {
+          "name": "Step 4: Update Learning",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"update_learning\",\n  \"learning_id\": \"Workflow Test Learning 1\",\n  \"confidence\": \"High\",\n  \"status\": \"Validated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Mark the learning as validated"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"list_projects\",\n  \"limit\": 10,\n  \"status\": \"Active\"\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
-        }
-      }
-    },
-    {
-      "name": "8. Query Feedback (Not Implemented)",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Authorization",
-            "value": "{{auth_token}}"
+        {
+          "name": "Step 5: Submit Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"query_feedback\",\n  \"query\": \"workflow testing validation\",\n  \"relevant_learning_ids\": [\"Workflow Test Learning 1\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Record that this learning was helpful"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"endpoint\": \"query_feedback\",\n  \"query_id\": \"test-query-123\",\n  \"learning_ids\": [\"20251124-0424-noel-sk-test\"],\n  \"feedback_type\": \"relevant\"\n}"
         },
-        "url": {
-          "raw": "{{base_url}}",
-          "host": ["{{base_url}}"]
+        {
+          "name": "Step 6: End Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endpoint\": \"end_session\",\n  \"session_id\": \"PASTE_SESSION_ID_FROM_STEP_1\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": ["{{base_url}}"]
+            },
+            "description": "Complete the session - paste session_id from Step 1 response"
+          }
         }
-      }
+      ]
     }
   ]
 }
