@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "session_id": "",
+    "created_at": "",
+    "last_updated": "",
+    "project": "Noel",
+    "skill_version": "1.0.0"
+  },
+  "session_context": {
+    "goals": "",
+    "current_task": "",
+    "branch": "",
+    "ngrok_url": "",
+    "webhook_endpoint": "/webhook/noel"
+  },
+  "relevant_learnings": [],
+  "active_blockers": [],
+  "atomic_progress": [],
+  "kpis": {
+    "learnings_loaded": 0,
+    "learnings_applied": 0,
+    "learnings_captured": 0,
+    "atomic_steps_completed": 0,
+    "debug_files_created": 0
+  }
+}

@@ -115,3 +115,7 @@ ENV/
 *.temp
 .temp/
 .tmp/
+
+# Noel domain memory (session state files)
+.noel/
+!.noel/.gitkeep

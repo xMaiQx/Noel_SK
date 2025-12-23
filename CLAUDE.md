@@ -1,6 +1,104 @@
 # Noel_SK Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-11-20
+Auto-generated from all feature plans. Last updated: 2025-12-18
+
+---
+
+## 🧠 NOEL DOMAIN MEMORY BIOS
+
+**CRITICAL: This section loads FIRST for ALL Claude Code agents (main + subagents)**
+
+Noel is not just a project - it's your **persistent domain memory system**. Every development session automatically integrates with Noel to load past learnings and capture new discoveries.
+
+### Auto-Initialization
+
+When working in ANY project (detected via git repo or directory):
+
+1. **Load relevant learnings** from Noel at session start
+2. **Track atomic progress** throughout the session
+3. **Capture breakthroughs** as they happen (not after)
+4. **Prevent anti-patterns** (no debug file clutter, time-bounded debugging)
+
+### Environment Setup
+
+```bash
+# Required: Set webhook URL (already configured in .env)
+export NOEL_WEBHOOK_URL="https://18f625ebc1f0.ngrok-free.app/webhook/noel"
+export NOEL_AUTH_TOKEN="1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6"
+
+# Auto-detect current project
+CURRENT_PROJECT=$(basename $(git rev-parse --show-toplevel 2>/dev/null) || basename "$PWD")
+```
+
+### Noel API Integration (Pattern 2)
+
+**All endpoints use single webhook URL with routing:**
+
+```bash
+# Query learnings (ALWAYS do this at session start)
+curl -s --location "$NOEL_WEBHOOK_URL" \
+  --header "Content-Type: application/json" \
+  --header "Authorization: $NOEL_AUTH_TOKEN" \
+  --data "{
+    \"endpoint\": \"query_learnings\",
+    \"query\": \"recent development patterns for $CURRENT_PROJECT\",
+    \"filters\": {\"project\": \"$CURRENT_PROJECT\"},
+    \"limit\": 5
+  }" | jq -r '.results[]'
+
+# Capture learning (when discovering patterns/solutions)
+curl -s --location "$NOEL_WEBHOOK_URL" \
+  --header "Content-Type: application/json" \
+  --header "Authorization: $NOEL_AUTH_TOKEN" \
+  --data "{
+    \"endpoint\": \"capture_learning\",
+    \"project\": \"$CURRENT_PROJECT\",
+    \"title\": \"<title>\",
+    \"content\": \"<description>\",
+    \"type\": \"Pattern|Solution|Error|Insight\",
+    \"confidence\": \"High|Medium|Low\"
+  }" | jq '.'
+```
+
+### When to Use Noel (Automatic Triggers)
+
+**QUERY (Load Context):**
+- ✅ **Session start** - Load top 5 relevant learnings for current task
+- ✅ **Before debugging** - "How have I debugged similar issues?"
+- ✅ **Before implementing** - "What patterns exist for this?"
+- ✅ **When stuck** - "What have I learned about this technology?"
+
+**CAPTURE (Save Discovery):**
+- ✅ **Solved non-trivial problem** - Save the solution pattern
+- ✅ **Discovered workaround** - Document the limitation and fix
+- ✅ **Fixed bug with root cause** - Explain why it happened
+- ✅ **Found useful pattern** - Describe when/how to apply it
+- ✅ **Hit dead end** - Document what DOESN'T work (anti-patterns)
+
+**DO NOT capture:**
+- ❌ Routine file creation or trivial edits
+- ❌ Following existing patterns exactly
+- ❌ Reading documentation (unless extracted key insight)
+
+### Anti-Pattern Prevention
+
+**Before creating ANY debug file**, ask:
+1. "Is this a learning that should go in Noel?"
+2. "Will this be useful beyond this session?"
+
+If yes → **Capture to Noel**, not a file.
+
+**Time boundaries for debugging:**
+- Max 30 minutes per debugging attempt
+- After 30 min: Capture findings (even if incomplete), take break
+- Query Noel before repeating similar debugging
+
+**Track progress atomically:**
+- One change at a time
+- Verify immediately
+- Capture significant discoveries in real-time
+
+---
 
 ## Project Overview
 
