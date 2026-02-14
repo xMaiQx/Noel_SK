@@ -107,6 +107,9 @@ Total Session Hours: 18.5
 | Session | Relation | To: Sessions, Show: Session ID | Associated session (nullable) |
 | AI Suggested | Checkbox | - | Indicates if metadata was AI-generated |
 | AI Accepted | Checkbox | Default: false | User confirms they accepted AI suggestions without modification |
+| **Scope** | **Select** | **Options: Project-Specific (default), Universal, Domain-Specific** | **Applicability level of the learning** |
+| **Discipline** | **Multi-select** | **Options: Architecture, UX/UI, Backend, Frontend, Database, DevOps, Security, Performance, Testing, Documentation** | **Professional discipline/domain categorization** |
+| **Applies To** | **Rich Text** | **Max 2000 chars** | **Free-form description of contexts where learning is relevant** |
 
 **Sample Data**:
 ```
@@ -117,6 +120,9 @@ Type: "Pattern"
 Dev Stream: ["n8n", "Architecture"]
 Content: "When orchestrating multiple agents, use a coordinator workflow that..."
 Context: "Discovered while refactoring agent communication logic"
+Scope: "Domain-Specific"
+Discipline: ["Architecture", "Backend"]
+Applies To: "n8n workflow design, multi-agent systems, coordinator pattern implementation"
 Tags: ["n8n", "agents", "coordinator-pattern", "workflow"]
 Related Files: "workflows/coordinator.json"
 Confidence: "High"

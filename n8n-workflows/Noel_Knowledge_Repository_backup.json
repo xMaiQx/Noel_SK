@@ -1,0 +1,2807 @@
+{
+  "updatedAt": "2026-01-26T14:52:50.184Z",
+  "createdAt": "2025-11-24T04:05:59.972Z",
+  "id": "vZSgaLE6I6VK4K6N",
+  "name": "Noel_Knowledge_Repository",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "noel",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type, Authorization"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        96
+      ],
+      "webhookId": "81d1f015-25ee-416f-92dc-0e281a3adb3d",
+      "id": "bba0df68-39d5-4ae1-90c4-04a0436c650d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ytE8nRojJHqxYk1K",
+          "name": "Workflow_Notion_API_Wrapper"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse incoming Noel request and extract endpoint\nconst input = $input.first().json;\n// Webhook wraps POST data in .body property\nconst requestData = input.body || input;\nconst endpoint = requestData.endpoint || 'unknown';\n\nreturn [{\n  json: {\n    endpoint: endpoint,\n    payload: requestData\n  }\n}];"
+      },
+      "name": "Parse Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        96
+      ],
+      "id": "6a238114-50ed-4d82-a430-e03f9952cf67"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "capture_learning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f4826218-1813-4ccb-a8b8-714d9faaece8"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "update_learning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f174baa1-a200-47be-a769-79222e754c4a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "query_learnings",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2072b4de-00e1-464a-b03e-8e61c40e1775"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "start_session",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d9f9697a-792a-41e9-9482-61d435901517"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "end_session",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cceb1270-8ddd-4a2a-86de-013047846083"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "list_sessions",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "ec3a3112-4e5a-49a1-8969-b80595b16590"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "list_projects",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3cc6c2d3-7432-4fc7-800b-95cbecaed17b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "query_feedback",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2ba6b768-3186-49d6-9b17-e5f3ab56a5d2"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "12cb1e39-4b49-4497-a43f-fff1a1e1067e",
+                    "leftValue": "={{ $json.endpoint }}",
+                    "rightValue": "create_project",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Route Endpoint",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "4ee94d7c-049f-4f0e-a081-6257a9652f5c"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        2672,
+        112
+      ],
+      "id": "b0e7fc61-d731-40f2-bd2a-9a87805dad1f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Capture Learning - Prepare Notion payload\n// ENHANCED with multi-dimensional metadata: Scope, Discipline, Applies To\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Helper: Create user-friendly summary for Notion (max 2000 chars)\nfunction createNotionSummary(fullContent) {\n  if (!fullContent) return '';\n\n  const MAX_LENGTH = 1900; // Safety buffer\n\n  if (fullContent.length <= MAX_LENGTH) {\n    return fullContent; // Short enough, use as-is\n  }\n\n  // Try to extract WHY and WHAT sections (most important for quick browsing)\n  const whyMatch = fullContent.match(/WHY:([\\s\\S]*?)(?=\\n\\nWHAT:|$)/i);\n  const whatMatch = fullContent.match(/WHAT:([\\s\\S]*?)(?=\\n\\nHOW:|$)/i);\n\n  if (whyMatch && whatMatch) {\n    const summary = `WHY:${whyMatch[1]}\\n\\nWHAT:${whatMatch[1]}\\n\\n[Full content in query results]`;\n    if (summary.length <= MAX_LENGTH) {\n      return summary;\n    }\n  }\n\n  // Fallback: Truncate with clear indicator\n  return fullContent.substring(0, MAX_LENGTH) + '\\n\\n... [Truncated - query for full content]';\n}\n\n// Build Notion page properties\nconst properties = {\n  'Title': {\n    title: [{ text: { content: payload.title || 'Untitled Learning' } }]\n  },\n  'Type': {\n    select: { name: payload.type || 'technical' }\n  },\n  'Content': {\n    rich_text: [{ text: { content: createNotionSummary(payload.content) } }]\n  },\n  'Context': {\n    rich_text: [{ text: { content: createNotionSummary(payload.context) } }]\n  },\n  'Confidence': {\n    select: { name: payload.confidence || 'medium' }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'Timestamp': {\n    date: { start: now }\n  },\n  'Last Modified': {\n    date: { start: now }\n  },\n  'AI Suggested': {\n    checkbox: payload.ai_suggested || false\n  },\n  'AI Accepted': {\n    checkbox: false\n  }\n};\n\n// Add optional fields\nif (payload.dev_stream && Array.isArray(payload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: payload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (payload.tags && Array.isArray(payload.tags)) {\n  properties['Tags'] = {\n    multi_select: payload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (payload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: createNotionSummary(payload.related_files) } }]\n  };\n}\n\n// NEW: Multi-dimensional metadata\nif (payload.scope) {\n  properties['Scope'] = {\n    select: { name: payload.scope }\n  };\n}\n\nif (payload.discipline && Array.isArray(payload.discipline)) {\n  properties['Discipline'] = {\n    multi_select: payload.discipline.map(d => ({ name: d }))\n  };\n}\n\nif (payload.applies_to) {\n  properties['Applies To'] = {\n    rich_text: [{ text: { content: createNotionSummary(payload.applies_to) } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Project'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\n// Session relation (requires page ID)\nif (payload.session_id) {\n  properties['Session'] = {\n    relation: [{ id: payload.session_id }]\n  };\n}\n\nreturn [{\n  json: {\n    title: payload.title,\n    notion_payload: {\n      parent: { data_source_id: '2b23d603-acb6-8001-983a-000b5df4e3b7' },\n      properties: properties\n    }\n  }\n}];\n"
+      },
+      "name": "Capture Learning Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -416
+      ],
+      "id": "f713c7f0-0f81-46d4-98e0-a4ad618dc560"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update Learning - Step 1: Query Notion to find page by Title (Learning ID)\nconst payload = $input.first().json.payload;\n\n// The learning_id IS the title in Notion\n// Query by Title field (title property uses different filter syntax)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-8001-983a-000b5df4e3b7'\n    },\n    body: {\n      filter: {\n        property: 'Title',\n        title: {\n          equals: payload.learning_id  // Changed from payload.title\n        }\n      },\n      page_size: 1\n    },\n    update_payload: payload  // Store for next step\n  }\n}];"
+      },
+      "name": "Update Learning Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -224
+      ],
+      "id": "d8fad38c-2d66-450c-8e0f-ea3c6f0e0e77"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Start Session - Generate Session ID and prepare Notion payload\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Generate Session ID: YYYYMMDD-HHMM-project\nconst date = new Date();\nconst dateStr = date.toISOString().slice(0,10).replace(/-/g, '');\nconst timeStr = date.toISOString().slice(11,16).replace(/:/g, '');\nconst projectSlug = (payload.project || 'unknown').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20);\nconst sessionId = `${dateStr}-${timeStr}-${projectSlug}`;\n\n// Build Notion page properties\nconst properties = {\n  'Session ID': {\n    title: [{ text: { content: sessionId } }]\n  },\n  'Goals': {\n    rich_text: [{ text: { content: payload.goals || '' } }]\n  },\n  'Start Time': {\n    date: { start: now }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'AI Type': {\n    select: { name: payload.ai_type || 'Claude' }\n  },\n  'Recording Format': {\n    select: { name: payload.recording_format || 'asciinema' }\n  }\n};\n\n// Add recording file path if provided\nif (payload.recording_file_path) {\n  properties['Recording File Path'] = {\n    rich_text: [{ text: { content: payload.recording_file_path } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Projects'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\nreturn [{\n  json: {\n    session_id: sessionId,\n    notion_payload: {\n      parent: { data_source_id: '2b43d603-acb6-8064-82f9-000b343a2e1c' },\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Start Session Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "72060d73-3506-429e-8d16-59a4477f50ec"
+    },
+    {
+      "parameters": {
+        "jsCode": "// End Session - Step 1: Query Notion to find session by Session ID\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Query by Session ID (title field)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: {\n      filter: {\n        property: 'Session ID',\n        title: {\n          equals: payload.session_id\n        }\n      },\n      page_size: 1\n    },\n    end_time: now,\n    session_id: payload.session_id\n  }\n}];"
+      },
+      "name": "End Session Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        816
+      ],
+      "id": "421b5f66-331a-4d05-885a-29aa1df786e9"
+    },
+    {
+      "parameters": {
+        "jsCode": "// List Sessions - Query sessions database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: body\n  }\n}];"
+      },
+      "name": "List Sessions Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        480
+      ],
+      "id": "f8403b97-32e2-461c-b30c-f1ba41a64256"
+    },
+    {
+      "parameters": {
+        "jsCode": "// List Projects - Query projects database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-80df-9e44-000bdb264067'\n    },\n    body: body\n  }\n}];"
+      },
+      "name": "List Projects Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        672
+      ],
+      "id": "0d1a0faa-b402-466d-9edc-27c33bde6255"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Query Feedback - Simplified version\nconst payload = $input.first().json.payload;\n\nconst queryText = payload.query || '';\nconst learningIds = payload.relevant_learning_ids || [];\n\n// TODO: Add HTTP Request node to actually store feedback in Supabase\n// For now, just return success to unblock endpoint testing\n\nreturn [{\n  json: {\n    success: true,\n    message: 'Thank you for the feedback! This helps improve search quality.',\n    query: queryText,\n    relevant_learning_count: learningIds.length,\n    note: 'Feedback logging to be implemented via HTTP Request node'\n  }\n}];"
+      },
+      "name": "Query Feedback Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        832
+      ],
+      "id": "573f786f-9d91-4c09-a6cb-335606f1eab1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Call Notion API wrapper to create page\nconst input = $input.first().json;\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null\n    },\n    body: input.notion_payload\n  }\n}];"
+      },
+      "name": "Prepare Create Page Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        -16
+      ],
+      "id": "596fafc3-a492-4abc-8cd4-0f25eb4bc801"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 2: Extract page_id from query result and prepare update\n// ENHANCED with multi-dimensional metadata support\nconst input = $input.first().json;\nconst updatePayload = $('Update Learning Logic').first().json.update_payload;\nconst now = new Date().toISOString();\n\n// Helper: Create user-friendly summary for Notion (max 2000 chars)\nfunction createNotionSummary(fullContent) {\n  if (!fullContent) return '';\n\n  const MAX_LENGTH = 1900;\n\n  if (fullContent.length <= MAX_LENGTH) {\n    return fullContent;\n  }\n\n  const whyMatch = fullContent.match(/WHY:([\\s\\S]*?)(?=\\n\\nWHAT:|$)/i);\n  const whatMatch = fullContent.match(/WHAT:([\\s\\S]*?)(?=\\n\\nHOW:|$)/i);\n\n  if (whyMatch && whatMatch) {\n    const summary = `WHY:${whyMatch[1]}\\n\\nWHAT:${whatMatch[1]}\\n\\n[Full content in query results]`;\n    if (summary.length <= MAX_LENGTH) {\n      return summary;\n    }\n  }\n\n  return fullContent.substring(0, MAX_LENGTH) + '\\n\\n... [Truncated - query for full content]';\n}\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Learning not found: ${updatePayload.learning_id}. ` +\n    `Query returned ${input.results ? input.results.length : 0} results. ` +\n    `Make sure the learning_id exactly matches the Notion page title.`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'Last Modified': {\n    date: { start: now }\n  }\n};\n\n// Update only provided fields\nif (updatePayload.title) {\n  properties['Title'] = {\n    title: [{ text: { content: updatePayload.title } }]\n  };\n}\n\nif (updatePayload.type) {\n  properties['Type'] = {\n    select: { name: updatePayload.type }\n  };\n}\n\nif (updatePayload.content) {\n  properties['Content'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.content) } }]\n  };\n}\n\nif (updatePayload.context) {\n  properties['Context'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.context) } }]\n  };\n}\n\nif (updatePayload.confidence) {\n  properties['Confidence'] = {\n    select: { name: updatePayload.confidence }\n  };\n}\n\nif (updatePayload.status) {\n  properties['Status'] = {\n    select: { name: updatePayload.status }\n  };\n}\n\nif (updatePayload.dev_stream && Array.isArray(updatePayload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: updatePayload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (updatePayload.tags && Array.isArray(updatePayload.tags)) {\n  properties['Tags'] = {\n    multi_select: updatePayload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (updatePayload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.related_files) } }]\n  };\n}\n\nif (updatePayload.ai_accepted !== undefined) {\n  properties['AI Accepted'] = {\n    checkbox: updatePayload.ai_accepted\n  };\n}\n\n// ============================================================================\n// Multi-Dimensional Metadata (NEW)\n// ============================================================================\n\nif (updatePayload.scope) {\n  properties['Scope'] = {\n    select: { name: updatePayload.scope }\n  };\n}\n\nif (updatePayload.discipline && Array.isArray(updatePayload.discipline)) {\n  properties['Discipline'] = {\n    multi_select: updatePayload.discipline.map(d => ({ name: d }))\n  };\n}\n\nif (updatePayload.applies_to) {\n  properties['Applies To'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.applies_to) } }]\n  };\n}\n\n// ============================================================================\n// Usage Metrics Properties (Phase 1 - Usage Tracking)\n// ============================================================================\n\nif (updatePayload['Usage Count'] !== undefined) {\n  properties['Usage Count'] = {\n    number: updatePayload['Usage Count']\n  };\n}\n\nif (updatePayload['Helpful Rate'] !== undefined) {\n  properties['Helpful Rate'] = {\n    number: updatePayload['Helpful Rate']\n  };\n}\n\nif (updatePayload['Success Rate'] !== undefined) {\n  properties['Success Rate'] = {\n    number: updatePayload['Success Rate']\n  };\n}\n\nif (updatePayload['Effectiveness Score'] !== undefined) {\n  properties['Effectiveness Score'] = {\n    number: updatePayload['Effectiveness Score']\n  };\n}\n\nif (updatePayload['Last Used']) {\n  properties['Last Used'] = {\n    date: { start: updatePayload['Last Used'] }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];\n"
+      },
+      "name": "Prepare Update Page Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -224
+      ],
+      "id": "41801e96-f930-4cab-a3a3-a8aa8db4bcb8"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Step 2: Extract page_id from query result and prepare session update\nconst input = $input.first().json;\nconst endSessionData = $('End Session Logic').first().json;\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Session not found: ${endSessionData.session_id}`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'End Time': {\n    date: { start: endSessionData.end_time }\n  },\n  'Status': {\n    select: { name: 'Completed' }\n  }\n};\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];"
+      },
+      "name": "Prepare End Session Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        816
+      ],
+      "id": "3e76467f-b6dd-4ed9-b889-62482a617ba4"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "name": "Call Notion API Wrapper (Query)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        -224
+      ],
+      "id": "2e1a969a-7258-4814-add3-dafb08da8179"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "name": "Call Notion API Wrapper (End Session Query)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        896,
+        816
+      ],
+      "id": "0fb979b1-83d4-4f46-8227-2e6b6f38e317"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "name": "Call Notion API Wrapper",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1872,
+        112
+      ],
+      "id": "87a0abba-0670-4e52-a8f6-6b9c8ce4d6c7"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format successful response\nconst input = $input.first().json;\n\nlet response = {\n  success: true,\n  data: input\n};\n\n// Extract title or session_id from created page if present\nif (input.id && input.properties) {\n  // This is a Notion page response\n  if (input.properties['Title']) {\n    response.title = input.properties['Title'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Learning \"${response.title}\" created successfully`;\n  } else if (input.properties['Session ID']) {\n    response.session_id = input.properties['Session ID'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Session ${response.session_id} started successfully`;\n  } else {\n    response.message = 'Updated successfully';\n  }\n} else if (input.results) {\n  // This is a query result\n  response.count = input.results.length;\n  response.message = `Retrieved ${response.count} items`;\n} else {\n  response.message = 'Operation completed';\n}\n\nreturn [{ json: response }];"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2128,
+        112
+      ],
+      "id": "c108688b-381d-4fbc-8c94-f7dafac78135"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Notion create page call for learning\nconst input = $input.first().json;\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null\n    },\n    body: input.notion_payload\n  }\n}];"
+      },
+      "name": "Prepare Learning Create Call",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -416
+      ],
+      "id": "6f7a2850-1e63-44ac-bafb-03397e461e4f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare data for embedding generation\n// ENHANCED with multi-dimensional metadata\nconst notionResponse = $input.first().json;\nconst captureData = $('Capture Learning Logic').first().json;\nconst originalPayload = $('Parse Request').first().json.payload;\n\n// Extract learning content\nconst title = captureData.title || 'Untitled';\nconst content = originalPayload.content || '';\nconst context = originalPayload.context || '';\n\n// Combine for embedding\nconst textForEmbedding = `${title}\\n\\n${content}\\n\\nContext: ${context}`;\n\n// Build metadata (ENHANCED with new fields)\nconst metadata = {\n    title: title,\n    project: originalPayload.project || 'Unknown',\n    type: originalPayload.type || 'technical',\n    dev_stream: originalPayload.dev_stream || [],\n    tags: originalPayload.tags || [],\n    confidence: originalPayload.confidence || 'Medium',\n    created_at: new Date().toISOString(),\n\n    // NEW: Multi-dimensional metadata\n    scope: originalPayload.scope || null,\n    discipline: originalPayload.discipline || [],\n    applies_to: originalPayload.applies_to || null\n};\n\nreturn [{\n    json: {\n        learning_id: title,\n        content: textForEmbedding,\n        metadata: metadata,\n        notion_response: notionResponse\n    }\n}];\n"
+      },
+      "name": "Prepare Embedding Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -416
+      ],
+      "id": "2bbeda6b-e4cb-49b6-a7f2-0756d6a9378d"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"model\": \"text-embedding-3-small\", \"input\": $json.content} }}",
+        "options": {}
+      },
+      "name": "Generate Embedding (OpenAI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        -416
+      ],
+      "id": "9db065c5-6699-49d6-954e-d2aaaf3c33ee",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OPENAI_CRED_ID",
+          "name": "OpenAI API Key"
+        },
+        "openAiApi": {
+          "id": "dtJJenFslwPGbxQL",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Supabase insert\nconst embeddingData = $('Prepare Embedding Data').first().json;\nconst embeddingResponse = $input.first().json;\n\nconst embedding = embeddingResponse.data[0].embedding;\n\n// Convert embedding array to proper format for Supabase vector type\nconst embeddingStr = `[${embedding.join(',')}]`;\n\nreturn [{\n    json: {\n        learning_id: embeddingData.learning_id,\n        content: embeddingData.content,\n        embedding: embeddingStr,\n        metadata: embeddingData.metadata,\n        notion_response: embeddingData.notion_response\n    }\n}];"
+      },
+      "name": "Prepare Supabase Insert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -416
+      ],
+      "id": "189e0bc2-dc65-4ee4-a7fb-9023f1f57660"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/learnings_vectors?on_conflict=learning_id",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"learning_id\": $json.learning_id, \"content\": $json.content, \"embedding\": $json.embedding, \"metadata\": $json.metadata} }}",
+        "options": {}
+      },
+      "name": "Store in Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2016,
+        -416
+      ],
+      "id": "1630d77c-58bc-425d-85d3-975ad888dec3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUPABASE_CRED_ID",
+          "name": "Supabase API Key"
+        },
+        "supabaseApi": {
+          "id": "dzXo3zuY3CuxGiIo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format capture_learning response\nconst supabaseData = $('Prepare Supabase Insert').first().json;\nconst notionResponse = supabaseData.notion_response;\n\nreturn [{\n    json: {\n        success: true,\n        title: supabaseData.learning_id,\n        page_id: notionResponse.id,\n        url: notionResponse.url,\n        message: `Learning \"${supabaseData.learning_id}\" created successfully`,\n        embedding_stored: true\n    }\n}];"
+      },
+      "name": "Format Capture Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -416
+      ],
+      "id": "f6bed764-c142-4cce-943c-95461ec996fe"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare query embedding request\nconst payload = $input.first().json.payload;\n\nreturn [{\n    json: {\n        query: payload.query,\n        limit: payload.limit || 5,\n        project: payload.project || null,\n        openai_request: {\n            model: 'text-embedding-3-small',\n            input: payload.query\n        }\n    }\n}];"
+      },
+      "name": "Query Learnings Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        288
+      ],
+      "id": "f1d7d724-6624-4dc6-83bf-65096c5b3b20"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.openai_request }}",
+        "options": {}
+      },
+      "name": "Generate Query Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        288
+      ],
+      "id": "9e8ed791-a62f-4214-a8ea-46ccf3915ed7",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "OPENAI_CRED_ID",
+          "name": "OpenAI API Key"
+        },
+        "openAiApi": {
+          "id": "dtJJenFslwPGbxQL",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Supabase vector search\n  const queryData = $('Query Learnings Logic').first().json;\n  const embeddingResponse = $input.first().json;\n\n  const queryEmbedding = embeddingResponse.data[0].embedding;\n\n  // Convert array to string for PostgreSQL vector type\n  const embeddingString = JSON.stringify(queryEmbedding);\n\n  return [{\n      json: {\n          query_embedding: embeddingString,  // Changed: now a string\n          match_count: queryData.limit,\n          project_filter: queryData.project\n      }\n  }];"
+      },
+      "name": "Prepare Vector Search",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        288
+      ],
+      "id": "e95b2843-b79b-4892-a202-f3c2ae8a4864"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/rpc/match_learnings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"query_embedding\": $json.query_embedding, \"match_count\": $json.match_count, \"project_filter\": $json.project_filter} }}",
+        "options": {}
+      },
+      "name": "Search Supabase Vectors",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2016,
+        288
+      ],
+      "id": "c2722766-b0ef-42a1-893d-aff9b9ceb89e",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUPABASE_CRED_ID",
+          "name": "Supabase API Key"
+        },
+        "supabaseApi": {
+          "id": "dzXo3zuY3CuxGiIo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format query results  \n  const searchResults = $input.all();\n\n  return [{\n      json: {\n          success: true,\n          count: searchResults.length,\n          results: searchResults.map(item => ({\n              learning_id: item.json.learning_id,\n              content: item.json.content,\n              similarity: item.json.similarity,\n              metadata: item.json.metadata\n          }))\n      }\n  }];"
+      },
+      "name": "Format Query Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        288
+      ],
+      "id": "c8462e70-1f24-4c57-b619-f39c8053c07c"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "ckclnbJYoUvb7WQm"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "name": "Call Notion API Wrapper (Query)1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        -416
+      ],
+      "id": "f98e3f34-db3b-40a2-b0e4-f9f9f3c5e214"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate required field and set defaults\nconst data = $input.first().json.payload;\n\n// Check required field\nif (!data.name) {\n  throw new Error(\"Missing required field: name\");\n}\n\n// Return validated data with defaults\nreturn {\n  json: {\n    name: data.name.trim(),\n    description: data.description || \"\",\n    status: data.status || \"Active\",\n    priority: data.priority || \"P2-Medium\",\n    tech_stack: Array.isArray(data.tech_stack) ? data.tech_stack : [],\n    repository_url: data.repository_url || \"\",\n    started: data.started || new Date().toISOString().split('T')[0]\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        1056
+      ],
+      "id": "5141eabc-8526-4910-8ec8-b57e073c9438",
+      "name": "Validate Project Input"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bf23d2db-6bee-4f08-ad72-cca4495e9e82",
+              "leftValue": "={{ $json.results && $json.results.length > 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1344,
+        1056
+      ],
+      "id": "6316fe9c-4680-4062-9bf4-40c8de26b993",
+      "name": "IF Project Exists"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare payload to create new project page in Notion\nconst validatedData = $('Prepare Check Query').item.json.validated_data;\n\n// Build Notion page properties\nconst properties = {\n  'Name': {\n    title: [{ text: { content: validatedData.name } }]\n  },\n  'Status': {\n    select: { name: validatedData.status }\n  },\n  'Priority': {\n    select: { name: validatedData.priority }\n  },\n  'Started': {\n    date: { start: validatedData.started }\n  }\n};\n\n// Add optional fields if provided\nif (validatedData.description) {\n  properties['Description'] = {\n    rich_text: [{ text: { content: validatedData.description } }]\n  };\n}\n\nif (validatedData.repository_url) {\n  properties['Repository URL'] = {\n    url: validatedData.repository_url\n  };\n}\n\nif (validatedData.tech_stack && validatedData.tech_stack.length > 0) {\n  properties['Tech Stack'] = {\n    multi_select: validatedData.tech_stack.map(tech => ({ name: tech }))\n  };\n}\n\n// Build notion_payload first\nconst notion_payload = {\n  parent: { data_source_id: '2b23d603-acb6-80df-9e44-000bdb264067' },  // Use data_source_id, not database_id!\n  properties: properties\n};\n\n// Then wrap it for the API wrapper\nreturn {\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null  // Not used for create_page\n    },\n    body: notion_payload  // The entire notion_payload goes in body\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        1152
+      ],
+      "id": "79687f99-6ba8-4bad-b9ba-6b6df5a9e4ad",
+      "name": "Prepare Create Payload"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ckclnbJYoUvb7WQm",
+          "cachedResultName": "00_MyCFO_Notion_API_Wrapper"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1760,
+        1152
+      ],
+      "id": "71553e81-b245-4066-b627-7a85c3def7ac",
+      "name": "Call Notion API Wrapper (Create)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Determine if project existed or was just created\nconst checkResults = $('Call Notion API Wrapper (Check)').item.json;\nconst projectExisted = checkResults.results && checkResults.results.length > 0;\n\n// Get project details\nconst validatedData = $('Prepare Check Query').item.json.validated_data;\n\n// Get Notion page ID\nlet notionPageId;\nif (projectExisted) {\n  // Project already existed - get ID from check results\n  notionPageId = checkResults.results[0].id;\n} else {\n  // Project was just created - get ID from create operation\n  notionPageId = $input.item.json.id;\n}\n\n// Format response\nreturn {\n  json: {\n    success: true,\n    project_name: validatedData.name,\n    notion_page_id: notionPageId,\n    message: projectExisted\n      ? `Project '${validatedData.name}' already exists`\n      : `Project '${validatedData.name}' registered successfully`\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1952,
+        1040
+      ],
+      "id": "201e1d13-2b47-477e-b737-d82a9e8cfded",
+      "name": "Format Response1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare query to check if project exists by name\nconst validatedData = $input.item.json;\n\nreturn {\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-80df-9e44-000bdb264067'  // Projects data source ID\n    },\n    body: {\n      filter: {\n        property: 'Name',\n        title: {\n          equals: validatedData.name\n        }\n      },\n      page_size: 1\n    },\n    validated_data: validatedData  // Preserve for later nodes\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        1056
+      ],
+      "id": "221fbe28-993d-4819-aee1-60838a0bfc40",
+      "name": "Prepare Check Query"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ckclnbJYoUvb7WQm",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ckclnbJYoUvb7WQm",
+          "cachedResultName": "00_MyCFO_Notion_API_Wrapper"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1088,
+        1056
+      ],
+      "id": "82f6a29e-707b-427e-8fb4-9118af46e8a0",
+      "name": "Call Notion API Wrapper (Check)"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Request": {
+      "main": [
+        [
+          {
+            "node": "Route Endpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Endpoint": {
+      "main": [
+        [
+          {
+            "node": "Capture Learning Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Learning Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Learnings Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Start Session Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "End Session Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "List Sessions Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "List Projects Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Feedback Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Validate Project Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Learning Logic": {
+      "main": [
+        [
+          {
+            "node": "Prepare Learning Create Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Learning Logic": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper (Query)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper (Query)": {
+      "main": [
+        [
+          {
+            "node": "Prepare Update Page Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Learnings Logic": {
+      "main": [
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Session Logic": {
+      "main": [
+        [
+          {
+            "node": "Prepare Create Page Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "End Session Logic": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper (End Session Query)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper (End Session Query)": {
+      "main": [
+        [
+          {
+            "node": "Prepare End Session Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare End Session Call": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Sessions Logic": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Projects Logic": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Feedback Logic": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Create Page Call": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Update Page Call": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Learning Create Call": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper (Query)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Embedding Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding (OpenAI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding (OpenAI)": {
+      "main": [
+        [
+          {
+            "node": "Prepare Supabase Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Supabase Insert": {
+      "main": [
+        [
+          {
+            "node": "Store in Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store in Supabase": {
+      "main": [
+        [
+          {
+            "node": "Format Capture Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Capture Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Prepare Vector Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Vector Search": {
+      "main": [
+        [
+          {
+            "node": "Search Supabase Vectors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Supabase Vectors": {
+      "main": [
+        [
+          {
+            "node": "Format Query Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Query Results": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper (Query)1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Embedding Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Project Input": {
+      "main": [
+        [
+          {
+            "node": "Prepare Check Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Project Exists": {
+      "main": [
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Create Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Create Payload": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper (Create)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper (Create)": {
+      "main": [
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Check Query": {
+      "main": [
+        [
+          {
+            "node": "Call Notion API Wrapper (Check)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Notion API Wrapper (Check)": {
+      "main": [
+        [
+          {
+            "node": "IF Project Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Webhook1": [
+      {
+        "json": {
+          "headers": {
+            "host": "9e527c57b6c1.ngrok-free.app",
+            "user-agent": "PostmanRuntime/7.49.1",
+            "content-length": "224",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br",
+            "authorization": "1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6",
+            "content-type": "application/json",
+            "x-forwarded-for": "187.168.10.248",
+            "x-forwarded-host": "9e527c57b6c1.ngrok-free.app",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "endpoint": "update_learning",
+            "learning_id": "20251124-0517-noel-sk-test-learning-from-p",
+            "title": "Updated Learning Title",
+            "status": "verified",
+            "tags": [
+              "postman",
+              "test",
+              "updated"
+            ],
+            "ai_accepted": true
+          },
+          "webhookUrl": "http://localhost:5678/webhook/noel",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "957e7660-deea-4f91-99c1-24d170e96797",
+  "activeVersionId": "957e7660-deea-4f91-99c1-24d170e96797",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-24T04:05:59.978Z",
+      "createdAt": "2025-11-24T04:05:59.978Z",
+      "role": "workflow:owner",
+      "workflowId": "vZSgaLE6I6VK4K6N",
+      "projectId": "Q68iaS6gYun0Zw7c"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-01-26T14:52:52.000Z",
+    "createdAt": "2026-01-26T14:52:50.187Z",
+    "versionId": "957e7660-deea-4f91-99c1-24d170e96797",
+    "workflowId": "vZSgaLE6I6VK4K6N",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "noel",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "name": "Access-Control-Allow-Methods",
+                  "value": "POST, OPTIONS"
+                },
+                {
+                  "name": "Access-Control-Allow-Headers",
+                  "value": "Content-Type, Authorization"
+                }
+              ]
+            }
+          }
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          96
+        ],
+        "webhookId": "81d1f015-25ee-416f-92dc-0e281a3adb3d",
+        "id": "bba0df68-39d5-4ae1-90c4-04a0436c650d",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "ytE8nRojJHqxYk1K",
+            "name": "Workflow_Notion_API_Wrapper"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Parse incoming Noel request and extract endpoint\nconst input = $input.first().json;\n// Webhook wraps POST data in .body property\nconst requestData = input.body || input;\nconst endpoint = requestData.endpoint || 'unknown';\n\nreturn [{\n  json: {\n    endpoint: endpoint,\n    payload: requestData\n  }\n}];"
+        },
+        "name": "Parse Request",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          224,
+          96
+        ],
+        "id": "6a238114-50ed-4d82-a430-e03f9952cf67"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "capture_learning",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "f4826218-1813-4ccb-a8b8-714d9faaece8"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "update_learning",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "f174baa1-a200-47be-a769-79222e754c4a"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "query_learnings",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "2072b4de-00e1-464a-b03e-8e61c40e1775"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "start_session",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "d9f9697a-792a-41e9-9482-61d435901517"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "end_session",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "cceb1270-8ddd-4a2a-86de-013047846083"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "list_sessions",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "ec3a3112-4e5a-49a1-8969-b80595b16590"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "list_projects",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "3cc6c2d3-7432-4fc7-800b-95cbecaed17b"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "query_feedback",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "2ba6b768-3186-49d6-9b17-e5f3ab56a5d2"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "12cb1e39-4b49-4497-a43f-fff1a1e1067e",
+                      "leftValue": "={{ $json.endpoint }}",
+                      "rightValue": "create_project",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "name": "Route Endpoint",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.3,
+        "position": [
+          432,
+          -16
+        ],
+        "id": "4ee94d7c-049f-4f0e-a081-6257a9652f5c"
+      },
+      {
+        "parameters": {
+          "respondWith": "allIncomingItems",
+          "options": {}
+        },
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          2672,
+          112
+        ],
+        "id": "b0e7fc61-d731-40f2-bd2a-9a87805dad1f"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Capture Learning - Prepare Notion payload\n// ENHANCED with multi-dimensional metadata: Scope, Discipline, Applies To\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Helper: Create user-friendly summary for Notion (max 2000 chars)\nfunction createNotionSummary(fullContent) {\n  if (!fullContent) return '';\n\n  const MAX_LENGTH = 1900; // Safety buffer\n\n  if (fullContent.length <= MAX_LENGTH) {\n    return fullContent; // Short enough, use as-is\n  }\n\n  // Try to extract WHY and WHAT sections (most important for quick browsing)\n  const whyMatch = fullContent.match(/WHY:([\\s\\S]*?)(?=\\n\\nWHAT:|$)/i);\n  const whatMatch = fullContent.match(/WHAT:([\\s\\S]*?)(?=\\n\\nHOW:|$)/i);\n\n  if (whyMatch && whatMatch) {\n    const summary = `WHY:${whyMatch[1]}\\n\\nWHAT:${whatMatch[1]}\\n\\n[Full content in query results]`;\n    if (summary.length <= MAX_LENGTH) {\n      return summary;\n    }\n  }\n\n  // Fallback: Truncate with clear indicator\n  return fullContent.substring(0, MAX_LENGTH) + '\\n\\n... [Truncated - query for full content]';\n}\n\n// Build Notion page properties\nconst properties = {\n  'Title': {\n    title: [{ text: { content: payload.title || 'Untitled Learning' } }]\n  },\n  'Type': {\n    select: { name: payload.type || 'technical' }\n  },\n  'Content': {\n    rich_text: [{ text: { content: createNotionSummary(payload.content) } }]\n  },\n  'Context': {\n    rich_text: [{ text: { content: createNotionSummary(payload.context) } }]\n  },\n  'Confidence': {\n    select: { name: payload.confidence || 'medium' }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'Timestamp': {\n    date: { start: now }\n  },\n  'Last Modified': {\n    date: { start: now }\n  },\n  'AI Suggested': {\n    checkbox: payload.ai_suggested || false\n  },\n  'AI Accepted': {\n    checkbox: false\n  }\n};\n\n// Add optional fields\nif (payload.dev_stream && Array.isArray(payload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: payload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (payload.tags && Array.isArray(payload.tags)) {\n  properties['Tags'] = {\n    multi_select: payload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (payload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: createNotionSummary(payload.related_files) } }]\n  };\n}\n\n// NEW: Multi-dimensional metadata\nif (payload.scope) {\n  properties['Scope'] = {\n    select: { name: payload.scope }\n  };\n}\n\nif (payload.discipline && Array.isArray(payload.discipline)) {\n  properties['Discipline'] = {\n    multi_select: payload.discipline.map(d => ({ name: d }))\n  };\n}\n\nif (payload.applies_to) {\n  properties['Applies To'] = {\n    rich_text: [{ text: { content: createNotionSummary(payload.applies_to) } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Project'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\n// Session relation (requires page ID)\nif (payload.session_id) {\n  properties['Session'] = {\n    relation: [{ id: payload.session_id }]\n  };\n}\n\nreturn [{\n  json: {\n    title: payload.title,\n    notion_payload: {\n      parent: { data_source_id: '2b23d603-acb6-8001-983a-000b5df4e3b7' },\n      properties: properties\n    }\n  }\n}];\n"
+        },
+        "name": "Capture Learning Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          -416
+        ],
+        "id": "f713c7f0-0f81-46d4-98e0-a4ad618dc560"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Update Learning - Step 1: Query Notion to find page by Title (Learning ID)\nconst payload = $input.first().json.payload;\n\n// The learning_id IS the title in Notion\n// Query by Title field (title property uses different filter syntax)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-8001-983a-000b5df4e3b7'\n    },\n    body: {\n      filter: {\n        property: 'Title',\n        title: {\n          equals: payload.learning_id  // Changed from payload.title\n        }\n      },\n      page_size: 1\n    },\n    update_payload: payload  // Store for next step\n  }\n}];"
+        },
+        "name": "Update Learning Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          -224
+        ],
+        "id": "d8fad38c-2d66-450c-8e0f-ea3c6f0e0e77"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Start Session - Generate Session ID and prepare Notion payload\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Generate Session ID: YYYYMMDD-HHMM-project\nconst date = new Date();\nconst dateStr = date.toISOString().slice(0,10).replace(/-/g, '');\nconst timeStr = date.toISOString().slice(11,16).replace(/:/g, '');\nconst projectSlug = (payload.project || 'unknown').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 20);\nconst sessionId = `${dateStr}-${timeStr}-${projectSlug}`;\n\n// Build Notion page properties\nconst properties = {\n  'Session ID': {\n    title: [{ text: { content: sessionId } }]\n  },\n  'Goals': {\n    rich_text: [{ text: { content: payload.goals || '' } }]\n  },\n  'Start Time': {\n    date: { start: now }\n  },\n  'Status': {\n    select: { name: 'Active' }\n  },\n  'AI Type': {\n    select: { name: payload.ai_type || 'Claude' }\n  },\n  'Recording Format': {\n    select: { name: payload.recording_format || 'asciinema' }\n  }\n};\n\n// Add recording file path if provided\nif (payload.recording_file_path) {\n  properties['Recording File Path'] = {\n    rich_text: [{ text: { content: payload.recording_file_path } }]\n  };\n}\n\n// Project relation (requires page ID)\nif (payload.project_id) {\n  properties['Projects'] = {\n    relation: [{ id: payload.project_id }]\n  };\n}\n\nreturn [{\n  json: {\n    session_id: sessionId,\n    notion_payload: {\n      parent: { data_source_id: '2b43d603-acb6-8064-82f9-000b343a2e1c' },\n      properties: properties\n    }\n  }\n}];"
+        },
+        "name": "Start Session Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          -16
+        ],
+        "id": "72060d73-3506-429e-8d16-59a4477f50ec"
+      },
+      {
+        "parameters": {
+          "jsCode": "// End Session - Step 1: Query Notion to find session by Session ID\nconst payload = $input.first().json.payload;\nconst now = new Date().toISOString();\n\n// Query by Session ID (title field)\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: {\n      filter: {\n        property: 'Session ID',\n        title: {\n          equals: payload.session_id\n        }\n      },\n      page_size: 1\n    },\n    end_time: now,\n    session_id: payload.session_id\n  }\n}];"
+        },
+        "name": "End Session Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          640,
+          816
+        ],
+        "id": "421b5f66-331a-4d05-885a-29aa1df786e9"
+      },
+      {
+        "parameters": {
+          "jsCode": "// List Sessions - Query sessions database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b43d603-acb6-8064-82f9-000b343a2e1c'\n    },\n    body: body\n  }\n}];"
+        },
+        "name": "List Sessions Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          480
+        ],
+        "id": "f8403b97-32e2-461c-b30c-f1ba41a64256"
+      },
+      {
+        "parameters": {
+          "jsCode": "// List Projects - Query projects database\nconst payload = $input.first().json.payload;\n\nconst body = {\n  page_size: payload.limit || 20\n};\n\n// Add status filter if provided\nif (payload.status) {\n  body.filter = {\n    property: 'Status',\n    select: {\n      equals: payload.status\n    }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-80df-9e44-000bdb264067'\n    },\n    body: body\n  }\n}];"
+        },
+        "name": "List Projects Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          672
+        ],
+        "id": "0d1a0faa-b402-466d-9edc-27c33bde6255"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Query Feedback - Simplified version\nconst payload = $input.first().json.payload;\n\nconst queryText = payload.query || '';\nconst learningIds = payload.relevant_learning_ids || [];\n\n// TODO: Add HTTP Request node to actually store feedback in Supabase\n// For now, just return success to unblock endpoint testing\n\nreturn [{\n  json: {\n    success: true,\n    message: 'Thank you for the feedback! This helps improve search quality.',\n    query: queryText,\n    relevant_learning_count: learningIds.length,\n    note: 'Feedback logging to be implemented via HTTP Request node'\n  }\n}];"
+        },
+        "name": "Query Feedback Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2240,
+          832
+        ],
+        "id": "573f786f-9d91-4c09-a6cb-335606f1eab1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Call Notion API wrapper to create page\nconst input = $input.first().json;\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null\n    },\n    body: input.notion_payload\n  }\n}];"
+        },
+        "name": "Prepare Create Page Call",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          912,
+          -16
+        ],
+        "id": "596fafc3-a492-4abc-8cd4-0f25eb4bc801"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Step 2: Extract page_id from query result and prepare update\n// ENHANCED with multi-dimensional metadata support\nconst input = $input.first().json;\nconst updatePayload = $('Update Learning Logic').first().json.update_payload;\nconst now = new Date().toISOString();\n\n// Helper: Create user-friendly summary for Notion (max 2000 chars)\nfunction createNotionSummary(fullContent) {\n  if (!fullContent) return '';\n\n  const MAX_LENGTH = 1900;\n\n  if (fullContent.length <= MAX_LENGTH) {\n    return fullContent;\n  }\n\n  const whyMatch = fullContent.match(/WHY:([\\s\\S]*?)(?=\\n\\nWHAT:|$)/i);\n  const whatMatch = fullContent.match(/WHAT:([\\s\\S]*?)(?=\\n\\nHOW:|$)/i);\n\n  if (whyMatch && whatMatch) {\n    const summary = `WHY:${whyMatch[1]}\\n\\nWHAT:${whatMatch[1]}\\n\\n[Full content in query results]`;\n    if (summary.length <= MAX_LENGTH) {\n      return summary;\n    }\n  }\n\n  return fullContent.substring(0, MAX_LENGTH) + '\\n\\n... [Truncated - query for full content]';\n}\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Learning not found: ${updatePayload.learning_id}. ` +\n    `Query returned ${input.results ? input.results.length : 0} results. ` +\n    `Make sure the learning_id exactly matches the Notion page title.`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'Last Modified': {\n    date: { start: now }\n  }\n};\n\n// Update only provided fields\nif (updatePayload.title) {\n  properties['Title'] = {\n    title: [{ text: { content: updatePayload.title } }]\n  };\n}\n\nif (updatePayload.type) {\n  properties['Type'] = {\n    select: { name: updatePayload.type }\n  };\n}\n\nif (updatePayload.content) {\n  properties['Content'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.content) } }]\n  };\n}\n\nif (updatePayload.context) {\n  properties['Context'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.context) } }]\n  };\n}\n\nif (updatePayload.confidence) {\n  properties['Confidence'] = {\n    select: { name: updatePayload.confidence }\n  };\n}\n\nif (updatePayload.status) {\n  properties['Status'] = {\n    select: { name: updatePayload.status }\n  };\n}\n\nif (updatePayload.dev_stream && Array.isArray(updatePayload.dev_stream)) {\n  properties['Dev Stream'] = {\n    multi_select: updatePayload.dev_stream.map(s => ({ name: s }))\n  };\n}\n\nif (updatePayload.tags && Array.isArray(updatePayload.tags)) {\n  properties['Tags'] = {\n    multi_select: updatePayload.tags.map(t => ({ name: t }))\n  };\n}\n\nif (updatePayload.related_files) {\n  properties['Related Files'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.related_files) } }]\n  };\n}\n\nif (updatePayload.ai_accepted !== undefined) {\n  properties['AI Accepted'] = {\n    checkbox: updatePayload.ai_accepted\n  };\n}\n\n// ============================================================================\n// Multi-Dimensional Metadata (NEW)\n// ============================================================================\n\nif (updatePayload.scope) {\n  properties['Scope'] = {\n    select: { name: updatePayload.scope }\n  };\n}\n\nif (updatePayload.discipline && Array.isArray(updatePayload.discipline)) {\n  properties['Discipline'] = {\n    multi_select: updatePayload.discipline.map(d => ({ name: d }))\n  };\n}\n\nif (updatePayload.applies_to) {\n  properties['Applies To'] = {\n    rich_text: [{ text: { content: createNotionSummary(updatePayload.applies_to) } }]\n  };\n}\n\n// ============================================================================\n// Usage Metrics Properties (Phase 1 - Usage Tracking)\n// ============================================================================\n\nif (updatePayload['Usage Count'] !== undefined) {\n  properties['Usage Count'] = {\n    number: updatePayload['Usage Count']\n  };\n}\n\nif (updatePayload['Helpful Rate'] !== undefined) {\n  properties['Helpful Rate'] = {\n    number: updatePayload['Helpful Rate']\n  };\n}\n\nif (updatePayload['Success Rate'] !== undefined) {\n  properties['Success Rate'] = {\n    number: updatePayload['Success Rate']\n  };\n}\n\nif (updatePayload['Effectiveness Score'] !== undefined) {\n  properties['Effectiveness Score'] = {\n    number: updatePayload['Effectiveness Score']\n  };\n}\n\nif (updatePayload['Last Used']) {\n  properties['Last Used'] = {\n    date: { start: updatePayload['Last Used'] }\n  };\n}\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];\n"
+        },
+        "name": "Prepare Update Page Call",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          -224
+        ],
+        "id": "41801e96-f930-4cab-a3a3-a8aa8db4bcb8"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Step 2: Extract page_id from query result and prepare session update\nconst input = $input.first().json;\nconst endSessionData = $('End Session Logic').first().json;\n\n// Extract page_id from query result\nif (!input.results || input.results.length === 0) {\n  throw new Error(`Session not found: ${endSessionData.session_id}`);\n}\n\nconst pageId = input.results[0].id;\n\n// Build update properties\nconst properties = {\n  'End Time': {\n    date: { start: endSessionData.end_time }\n  },\n  'Status': {\n    select: { name: 'Completed' }\n  }\n};\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'update_page',\n      id: pageId\n    },\n    body: {\n      properties: properties\n    }\n  }\n}];"
+        },
+        "name": "Prepare End Session Call",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1136,
+          816
+        ],
+        "id": "3e76467f-b6dd-4ed9-b889-62482a617ba4"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ckclnbJYoUvb7WQm",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "name": "Call Notion API Wrapper (Query)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          896,
+          -224
+        ],
+        "id": "2e1a969a-7258-4814-add3-dafb08da8179"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ckclnbJYoUvb7WQm",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {}
+          },
+          "options": {}
+        },
+        "name": "Call Notion API Wrapper (End Session Query)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          896,
+          816
+        ],
+        "id": "0fb979b1-83d4-4f46-8227-2e6b6f38e317"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ckclnbJYoUvb7WQm",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {}
+          },
+          "options": {}
+        },
+        "name": "Call Notion API Wrapper",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1872,
+          112
+        ],
+        "id": "87a0abba-0670-4e52-a8f6-6b9c8ce4d6c7"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Format successful response\nconst input = $input.first().json;\n\nlet response = {\n  success: true,\n  data: input\n};\n\n// Extract title or session_id from created page if present\nif (input.id && input.properties) {\n  // This is a Notion page response\n  if (input.properties['Title']) {\n    response.title = input.properties['Title'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Learning \"${response.title}\" created successfully`;\n  } else if (input.properties['Session ID']) {\n    response.session_id = input.properties['Session ID'].title[0]?.text?.content;\n    response.page_id = input.id;\n    response.url = input.url;\n    response.message = `Session ${response.session_id} started successfully`;\n  } else {\n    response.message = 'Updated successfully';\n  }\n} else if (input.results) {\n  // This is a query result\n  response.count = input.results.length;\n  response.message = `Retrieved ${response.count} items`;\n} else {\n  response.message = 'Operation completed';\n}\n\nreturn [{ json: response }];"
+        },
+        "name": "Format Response",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2128,
+          112
+        ],
+        "id": "c108688b-381d-4fbc-8c94-f7dafac78135"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare Notion create page call for learning\nconst input = $input.first().json;\n\nreturn [{\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null\n    },\n    body: input.notion_payload\n  }\n}];"
+        },
+        "name": "Prepare Learning Create Call",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          896,
+          -416
+        ],
+        "id": "6f7a2850-1e63-44ac-bafb-03397e461e4f"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare data for embedding generation\n// ENHANCED with multi-dimensional metadata\nconst notionResponse = $input.first().json;\nconst captureData = $('Capture Learning Logic').first().json;\nconst originalPayload = $('Parse Request').first().json.payload;\n\n// Extract learning content\nconst title = captureData.title || 'Untitled';\nconst content = originalPayload.content || '';\nconst context = originalPayload.context || '';\n\n// Combine for embedding\nconst textForEmbedding = `${title}\\n\\n${content}\\n\\nContext: ${context}`;\n\n// Build metadata (ENHANCED with new fields)\nconst metadata = {\n    title: title,\n    project: originalPayload.project || 'Unknown',\n    type: originalPayload.type || 'technical',\n    dev_stream: originalPayload.dev_stream || [],\n    tags: originalPayload.tags || [],\n    confidence: originalPayload.confidence || 'Medium',\n    created_at: new Date().toISOString(),\n\n    // NEW: Multi-dimensional metadata\n    scope: originalPayload.scope || null,\n    discipline: originalPayload.discipline || [],\n    applies_to: originalPayload.applies_to || null\n};\n\nreturn [{\n    json: {\n        learning_id: title,\n        content: textForEmbedding,\n        metadata: metadata,\n        notion_response: notionResponse\n    }\n}];\n"
+        },
+        "name": "Prepare Embedding Data",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1344,
+          -416
+        ],
+        "id": "2bbeda6b-e4cb-49b6-a7f2-0756d6a9378d"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/embeddings",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ {\"model\": \"text-embedding-3-small\", \"input\": $json.content} }}",
+          "options": {}
+        },
+        "name": "Generate Embedding (OpenAI)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1568,
+          -416
+        ],
+        "id": "9db065c5-6699-49d6-954e-d2aaaf3c33ee",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "OPENAI_CRED_ID",
+            "name": "OpenAI API Key"
+          },
+          "openAiApi": {
+            "id": "dtJJenFslwPGbxQL",
+            "name": "OpenAI API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare Supabase insert\nconst embeddingData = $('Prepare Embedding Data').first().json;\nconst embeddingResponse = $input.first().json;\n\nconst embedding = embeddingResponse.data[0].embedding;\n\n// Convert embedding array to proper format for Supabase vector type\nconst embeddingStr = `[${embedding.join(',')}]`;\n\nreturn [{\n    json: {\n        learning_id: embeddingData.learning_id,\n        content: embeddingData.content,\n        embedding: embeddingStr,\n        metadata: embeddingData.metadata,\n        notion_response: embeddingData.notion_response\n    }\n}];"
+        },
+        "name": "Prepare Supabase Insert",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1792,
+          -416
+        ],
+        "id": "189e0bc2-dc65-4ee4-a7fb-9023f1f57660"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/learnings_vectors?on_conflict=learning_id",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "resolution=merge-duplicates,return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ {\"learning_id\": $json.learning_id, \"content\": $json.content, \"embedding\": $json.embedding, \"metadata\": $json.metadata} }}",
+          "options": {}
+        },
+        "name": "Store in Supabase",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2016,
+          -416
+        ],
+        "id": "1630d77c-58bc-425d-85d3-975ad888dec3",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "SUPABASE_CRED_ID",
+            "name": "Supabase API Key"
+          },
+          "supabaseApi": {
+            "id": "dzXo3zuY3CuxGiIo",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Format capture_learning response\nconst supabaseData = $('Prepare Supabase Insert').first().json;\nconst notionResponse = supabaseData.notion_response;\n\nreturn [{\n    json: {\n        success: true,\n        title: supabaseData.learning_id,\n        page_id: notionResponse.id,\n        url: notionResponse.url,\n        message: `Learning \"${supabaseData.learning_id}\" created successfully`,\n        embedding_stored: true\n    }\n}];"
+        },
+        "name": "Format Capture Response",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2240,
+          -416
+        ],
+        "id": "f6bed764-c142-4cce-943c-95461ec996fe"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare query embedding request\nconst payload = $input.first().json.payload;\n\nreturn [{\n    json: {\n        query: payload.query,\n        limit: payload.limit || 5,\n        project: payload.project || null,\n        openai_request: {\n            model: 'text-embedding-3-small',\n            input: payload.query\n        }\n    }\n}];"
+        },
+        "name": "Query Learnings Logic",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1344,
+          288
+        ],
+        "id": "f1d7d724-6624-4dc6-83bf-65096c5b3b20"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/embeddings",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "openAiApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ $json.openai_request }}",
+          "options": {}
+        },
+        "name": "Generate Query Embedding",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1568,
+          288
+        ],
+        "id": "9e8ed791-a62f-4214-a8ea-46ccf3915ed7",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "OPENAI_CRED_ID",
+            "name": "OpenAI API Key"
+          },
+          "openAiApi": {
+            "id": "dtJJenFslwPGbxQL",
+            "name": "OpenAI API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare Supabase vector search\n  const queryData = $('Query Learnings Logic').first().json;\n  const embeddingResponse = $input.first().json;\n\n  const queryEmbedding = embeddingResponse.data[0].embedding;\n\n  // Convert array to string for PostgreSQL vector type\n  const embeddingString = JSON.stringify(queryEmbedding);\n\n  return [{\n      json: {\n          query_embedding: embeddingString,  // Changed: now a string\n          match_count: queryData.limit,\n          project_filter: queryData.project\n      }\n  }];"
+        },
+        "name": "Prepare Vector Search",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1792,
+          288
+        ],
+        "id": "e95b2843-b79b-4892-a202-f3c2ae8a4864"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/rpc/match_learnings",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "supabaseApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ {\"query_embedding\": $json.query_embedding, \"match_count\": $json.match_count, \"project_filter\": $json.project_filter} }}",
+          "options": {}
+        },
+        "name": "Search Supabase Vectors",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2016,
+          288
+        ],
+        "id": "c2722766-b0ef-42a1-893d-aff9b9ceb89e",
+        "alwaysOutputData": true,
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "SUPABASE_CRED_ID",
+            "name": "Supabase API Key"
+          },
+          "supabaseApi": {
+            "id": "dzXo3zuY3CuxGiIo",
+            "name": "Supabase account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// Format query results  \n  const searchResults = $input.all();\n\n  return [{\n      json: {\n          success: true,\n          count: searchResults.length,\n          results: searchResults.map(item => ({\n              learning_id: item.json.learning_id,\n              content: item.json.content,\n              similarity: item.json.similarity,\n              metadata: item.json.metadata\n          }))\n      }\n  }];"
+        },
+        "name": "Format Query Results",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2240,
+          288
+        ],
+        "id": "c8462e70-1f24-4c57-b619-f39c8053c07c"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "ckclnbJYoUvb7WQm"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "name": "Call Notion API Wrapper (Query)1",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1104,
+          -416
+        ],
+        "id": "f98e3f34-db3b-40a2-b0e4-f9f9f3c5e214"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Validate required field and set defaults\nconst data = $input.first().json.payload;\n\n// Check required field\nif (!data.name) {\n  throw new Error(\"Missing required field: name\");\n}\n\n// Return validated data with defaults\nreturn {\n  json: {\n    name: data.name.trim(),\n    description: data.description || \"\",\n    status: data.status || \"Active\",\n    priority: data.priority || \"P2-Medium\",\n    tech_stack: Array.isArray(data.tech_stack) ? data.tech_stack : [],\n    repository_url: data.repository_url || \"\",\n    started: data.started || new Date().toISOString().split('T')[0]\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          640,
+          1056
+        ],
+        "id": "5141eabc-8526-4910-8ec8-b57e073c9438",
+        "name": "Validate Project Input"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "bf23d2db-6bee-4f08-ad72-cca4495e9e82",
+                "leftValue": "={{ $json.results && $json.results.length > 0 }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1344,
+          1056
+        ],
+        "id": "6316fe9c-4680-4062-9bf4-40c8de26b993",
+        "name": "IF Project Exists"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare payload to create new project page in Notion\nconst validatedData = $('Prepare Check Query').item.json.validated_data;\n\n// Build Notion page properties\nconst properties = {\n  'Name': {\n    title: [{ text: { content: validatedData.name } }]\n  },\n  'Status': {\n    select: { name: validatedData.status }\n  },\n  'Priority': {\n    select: { name: validatedData.priority }\n  },\n  'Started': {\n    date: { start: validatedData.started }\n  }\n};\n\n// Add optional fields if provided\nif (validatedData.description) {\n  properties['Description'] = {\n    rich_text: [{ text: { content: validatedData.description } }]\n  };\n}\n\nif (validatedData.repository_url) {\n  properties['Repository URL'] = {\n    url: validatedData.repository_url\n  };\n}\n\nif (validatedData.tech_stack && validatedData.tech_stack.length > 0) {\n  properties['Tech Stack'] = {\n    multi_select: validatedData.tech_stack.map(tech => ({ name: tech }))\n  };\n}\n\n// Build notion_payload first\nconst notion_payload = {\n  parent: { data_source_id: '2b23d603-acb6-80df-9e44-000bdb264067' },  // Use data_source_id, not database_id!\n  properties: properties\n};\n\n// Then wrap it for the API wrapper\nreturn {\n  json: {\n    query: {\n      endpoint: 'create_page',\n      id: null  // Not used for create_page\n    },\n    body: notion_payload  // The entire notion_payload goes in body\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1552,
+          1152
+        ],
+        "id": "79687f99-6ba8-4bad-b9ba-6b6df5a9e4ad",
+        "name": "Prepare Create Payload"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ckclnbJYoUvb7WQm",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/ckclnbJYoUvb7WQm",
+            "cachedResultName": "00_MyCFO_Notion_API_Wrapper"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1760,
+          1152
+        ],
+        "id": "71553e81-b245-4066-b627-7a85c3def7ac",
+        "name": "Call Notion API Wrapper (Create)"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Determine if project existed or was just created\nconst checkResults = $('Call Notion API Wrapper (Check)').item.json;\nconst projectExisted = checkResults.results && checkResults.results.length > 0;\n\n// Get project details\nconst validatedData = $('Prepare Check Query').item.json.validated_data;\n\n// Get Notion page ID\nlet notionPageId;\nif (projectExisted) {\n  // Project already existed - get ID from check results\n  notionPageId = checkResults.results[0].id;\n} else {\n  // Project was just created - get ID from create operation\n  notionPageId = $input.item.json.id;\n}\n\n// Format response\nreturn {\n  json: {\n    success: true,\n    project_name: validatedData.name,\n    notion_page_id: notionPageId,\n    message: projectExisted\n      ? `Project '${validatedData.name}' already exists`\n      : `Project '${validatedData.name}' registered successfully`\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1952,
+          1040
+        ],
+        "id": "201e1d13-2b47-477e-b737-d82a9e8cfded",
+        "name": "Format Response1"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Prepare query to check if project exists by name\nconst validatedData = $input.item.json;\n\nreturn {\n  json: {\n    query: {\n      endpoint: 'query_data_source',\n      id: '2b23d603-acb6-80df-9e44-000bdb264067'  // Projects data source ID\n    },\n    body: {\n      filter: {\n        property: 'Name',\n        title: {\n          equals: validatedData.name\n        }\n      },\n      page_size: 1\n    },\n    validated_data: validatedData  // Preserve for later nodes\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          848,
+          1056
+        ],
+        "id": "221fbe28-993d-4819-aee1-60838a0bfc40",
+        "name": "Prepare Check Query"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "ckclnbJYoUvb7WQm",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/ckclnbJYoUvb7WQm",
+            "cachedResultName": "00_MyCFO_Notion_API_Wrapper"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1088,
+          1056
+        ],
+        "id": "82f6a29e-707b-427e-8fb4-9118af46e8a0",
+        "name": "Call Notion API Wrapper (Check)"
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Parse Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Request": {
+        "main": [
+          [
+            {
+              "node": "Route Endpoint",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Route Endpoint": {
+        "main": [
+          [
+            {
+              "node": "Capture Learning Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Update Learning Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Query Learnings Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Start Session Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "End Session Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "List Sessions Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "List Projects Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Query Feedback Logic",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Validate Project Input",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Capture Learning Logic": {
+        "main": [
+          [
+            {
+              "node": "Prepare Learning Create Call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Learning Logic": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper (Query)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper (Query)": {
+        "main": [
+          [
+            {
+              "node": "Prepare Update Page Call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Query Learnings Logic": {
+        "main": [
+          [
+            {
+              "node": "Generate Query Embedding",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Start Session Logic": {
+        "main": [
+          [
+            {
+              "node": "Prepare Create Page Call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "End Session Logic": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper (End Session Query)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper (End Session Query)": {
+        "main": [
+          [
+            {
+              "node": "Prepare End Session Call",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare End Session Call": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List Sessions Logic": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "List Projects Logic": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Query Feedback Logic": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Create Page Call": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Update Page Call": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper": {
+        "main": [
+          [
+            {
+              "node": "Format Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Response": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Learning Create Call": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper (Query)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Embedding Data": {
+        "main": [
+          [
+            {
+              "node": "Generate Embedding (OpenAI)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Embedding (OpenAI)": {
+        "main": [
+          [
+            {
+              "node": "Prepare Supabase Insert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Supabase Insert": {
+        "main": [
+          [
+            {
+              "node": "Store in Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Store in Supabase": {
+        "main": [
+          [
+            {
+              "node": "Format Capture Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Capture Response": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate Query Embedding": {
+        "main": [
+          [
+            {
+              "node": "Prepare Vector Search",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Vector Search": {
+        "main": [
+          [
+            {
+              "node": "Search Supabase Vectors",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Search Supabase Vectors": {
+        "main": [
+          [
+            {
+              "node": "Format Query Results",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Query Results": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper (Query)1": {
+        "main": [
+          [
+            {
+              "node": "Prepare Embedding Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Project Input": {
+        "main": [
+          [
+            {
+              "node": "Prepare Check Query",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Project Exists": {
+        "main": [
+          [
+            {
+              "node": "Format Response1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepare Create Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Create Payload": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper (Create)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper (Create)": {
+        "main": [
+          [
+            {
+              "node": "Format Response1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Response1": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Check Query": {
+        "main": [
+          [
+            {
+              "node": "Call Notion API Wrapper (Check)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call Notion API Wrapper (Check)": {
+        "main": [
+          [
+            {
+              "node": "IF Project Exists",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Miguel Muro",
+    "name": "Version 957e7660",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-12-15T05:00:05.531Z",
+      "createdAt": "2025-12-15T05:00:05.531Z",
+      "id": "e7sdnSJ1Mh8xh6kz",
+      "name": "Noel"
+    }
+  ]
+}

@@ -1,34 +1,12 @@
 # Noel_SK Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-12-18
-
----
-
-## 🧠 NOEL DOMAIN MEMORY BIOS
-
-**CRITICAL: This section loads FIRST for ALL Claude Code agents (main + subagents)**
-
-Noel is not just a project - it's your **persistent domain memory system**. Every development session automatically integrates with Noel to load past learnings and capture new discoveries.
-
-### Auto-Initialization
-
-When working in ANY project (detected via git repo or directory):
-
-1. **Load relevant learnings** from Noel at session start
-2. **Track atomic progress** throughout the session
-3. **Capture breakthroughs** as they happen (not after)
-4. **Prevent anti-patterns** (no debug file clutter, time-bounded debugging)
-
-### Environment Setup
+## MANDATORY FIRST ACTION - QUERY NOEL BEFORE EXPLORING
 
 ```bash
-# Required: Set webhook URL (already configured in .env)
-export NOEL_WEBHOOK_URL="https://18f625ebc1f0.ngrok-free.app/webhook/noel"
-export NOEL_AUTH_TOKEN="1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6"
-
-# Auto-detect current project
-CURRENT_PROJECT=$(basename $(git rev-parse --show-toplevel 2>/dev/null) || basename "$PWD")
+source ~/.claude/noel-quick.sh && noel-q "relevant terms for the task"
 ```
+
+This resolves the live ngrok URL and queries Noel's knowledge base. Noel likely already has the answer. **DO NOT read spec files, explore the codebase, or spawn agents** until you've checked Noel first. That wastes the very tokens Noel exists to save.
 
 ### Noel API Integration (Pattern 2)
 
@@ -112,6 +90,40 @@ Noel is a workflow-based knowledge management system for capturing, enriching, a
 - **AI Services**: OpenAI (text-embedding-3-small, GPT-4o-mini)
 - **Recording**: asciinema (session replay)
 - **Scripting**: Bash, JavaScript (Node.js 18+)
+
+---
+
+## 🏗️ Architecture Decisions
+
+### Notion API Wrapper Pattern (MANDATORY)
+
+**CRITICAL**: NEVER use direct Notion nodes in n8n workflows. ALWAYS use the Execute Workflow pattern.
+
+**Pattern**:
+```
+Code Node (Prepare query/body) → Execute Workflow (00_MyCFO_Notion_API_Wrapper) → Process Response
+```
+
+**Why**: Centralized Notion logic, consistent error handling, easier maintenance.
+
+**Documentation**: See `docs/ARCHITECTURE_NOTION_API_WRAPPER_PATTERN.md` for complete details, examples, and anti-patterns.
+
+**Wrapper Workflow ID**: `ckclnbJYoUvb7WQm` (00_MyCFO_Notion_API_Wrapper)
+
+**Quick Example**:
+```javascript
+// Prepare query/body in Code node
+return {
+  json: {
+    query: {
+      endpoint: 'query_data_source',
+      id: 'DATA_SOURCE_ID'
+    },
+    body: { /* params */ }
+  }
+};
+// Then call Execute Workflow → ckclnbJYoUvb7WQm
+```
 
 ## Project Structure
 

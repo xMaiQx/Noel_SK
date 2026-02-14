@@ -1,0 +1,877 @@
+{
+  "name": "Noel Telegram Gateway",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "id": "3b34a467-f554-4cd1-b3be-f35c7e27303f",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "yThtgY0qtsaAlq1w",
+          "name": "Noel Telegram Bot"
+        }
+      },
+      "webhookId": "15abd037-42e4-47b9-8f8b-c386ccc8d671"
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = $input.first().json.message || $input.first().json;\nconst text = message.text || '';\nconst chatId = String(message.chat?.id || message.from?.id || '');\nconst username = message.from?.username || 'unknown';\nconst commandMatch = text.match(/^\\/([\\w]+)(?:\\s+(.*))?$/s);\nreturn [{json: {\n  chat_id: chatId,\n  username: username,\n  message_id: message.message_id,\n  command: commandMatch ? commandMatch[1].toLowerCase() : 'unknown',\n  args: commandMatch ? (commandMatch[2] || '').trim() : text.trim(),\n  raw_text: text\n}}];"
+      },
+      "id": "4022a6cf-1fda-460a-abad-5aa38154ff1f",
+      "name": "Parse Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/rpc/validate_telegram_chat",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"p_chat_id\": \"{{ $json.chat_id }}\"}",
+        "options": {}
+      },
+      "id": "d45c0e91-e4d0-4e04-a454-096e07ff30ea",
+      "name": "Auth Check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "dzXo3zuY3CuxGiIo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1ccd9fd8-683f-44df-afbb-bf9089c63208",
+              "leftValue": "={{ $json[0].is_authorized }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "54a42863-5e0b-4e50-9de2-0c60d55127e3",
+      "name": "IF Authorized",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Message').item.json.command }}",
+                    "rightValue": "help",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "42a288cc-59e1-4f44-b19e-913da0af195f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Message').item.json.command }}",
+                    "rightValue": "capture",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "91c17eac-8dd1-4a6d-8ea2-6f5a8f69d449"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Message').item.json.command }}",
+                    "rightValue": "query",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f6f37869-5926-4dfa-bcac-4ab728484d09"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Message').item.json.command }}",
+                    "rightValue": "status",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8019c1b0-bac3-4c70-9edf-28bf0cc565e9"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Parse Message').item.json.command }}",
+                    "rightValue": "projects",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a33f1273-aaeb-4847-8a35-a920e6eb05e1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "815aec2d-4631-4e3c-9c72-e4816b3d3877",
+      "name": "Command Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json: {\n  response_text: '\\ud83e\\udde0 *Noel Knowledge Bot*\\n\\n' +\n    'Commands:\\n' +\n    '/capture Title | Content - Capture a learning\\n' +\n    '/query search terms - Search learnings\\n' +\n    '/status - System statistics\\n' +\n    '/projects - List projects\\n' +\n    '/help - This reference\\n\\n' +\n    'Capture format:\\n' +\n    '`/capture Bug Fix | WHY: reason WHAT: solution HOW: steps`'\n}}];"
+      },
+      "id": "574dd979-3cb3-43f8-b29d-46093be59616",
+      "name": "Help Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const args = $('Parse Message').item.json.args || '';\nconst defaultProject = $('Auth Check').item.json[0]?.default_project || 'Noel_SK';\nconst parts = args.split('|');\nif (parts.length < 2 || parts[0].trim().length < 5 || parts[1].trim().length < 10) {\n  return [{json: {is_error: true, error_message: 'Invalid format. Use:\\n/capture Title | Content\\n\\nTitle min 5 chars, Content min 10 chars.'}}];\n}\nreturn [{json: {\n  is_error: false,\n  noel_payload: {\n    endpoint: 'capture_learning',\n    project: defaultProject,\n    title: parts[0].trim(),\n    content: parts.slice(1).join('|').trim(),\n    type: 'Solution',\n    confidence: 'Medium',\n    source_channel: 'telegram',\n    tags: ['telegram-capture']\n  }\n}}];"
+      },
+      "id": "a07cbba6-b1c5-4a30-8528-72942313d94e",
+      "name": "Parse Capture",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "30451fd2-b25b-4253-88e7-64d046df9e3e",
+              "leftValue": "={{ $json.is_error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4c48392c-a54b-4eb1-8267-5398f8711428",
+      "name": "IF Valid Capture",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/noel",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.noel_payload) }}",
+        "options": {}
+      },
+      "id": "ba1f259b-cad7-4ede-80b1-90dbd54ceab5",
+      "name": "HTTP Noel Capture",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const res = $input.first().json;\nconst data = Array.isArray(res) ? res[0] : res;\nlet text;\nif (data.success || data.learning_id) {\n  text = '\\u2705 Learning captured!\\nID: ' + (data.learning_id || 'unknown') + '\\nTitle: ' + (data.title || 'saved');\n} else {\n  text = '\\u26a0\\ufe0f Capture response: ' + JSON.stringify(data).substring(0, 200);\n}\nreturn [{json: {response_text: text}}];"
+      },
+      "id": "301a4511-1f08-4664-8100-912ea78535b0",
+      "name": "Format Capture Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const args = $('Parse Message').item.json.args || '';\nif (args.length < 3) {\n  return [{json: {is_error: true, error_message: 'Query too short. Use:\\n/query search terms\\n\\nMin 3 characters.'}}];\n}\nreturn [{json: {\n  is_error: false,\n  noel_payload: {endpoint: 'query_learnings', query: args, limit: 5}\n}}];"
+      },
+      "id": "542775a1-df7e-41f8-a209-594596a5f0df",
+      "name": "Parse Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "313470dd-21cc-4cdc-b711-b89ef2b2b40f",
+              "leftValue": "={{ $json.is_error }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "88009ce5-f648-4ada-babf-2f56a1683f97",
+      "name": "IF Valid Query",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/noel",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "1b3b9c7a-2f3e-41e9-bb29-d9ad58f7c1d6"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.noel_payload) }}",
+        "options": {}
+      },
+      "id": "19b967e4-8346-4536-8b8c-e28ebb264925",
+      "name": "HTTP Noel Query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst data = Array.isArray(raw) ? raw[0] : raw;\nconst results = data.results || [];\nconst query = $('Parse Message').item.json.args || '';\nif (results.length === 0) {\n  return [{json: {response_text: 'No results for: ' + query + '\\n\\nTry different search terms.'}}];\n}\nlet text = '\\ud83d\\udd0d Results for: ' + query + '\\n\\n';\nresults.slice(0, 5).forEach((r, i) => {\n  const title = r.metadata?.title || r.title || 'Untitled';\n  const project = r.metadata?.project || '';\n  const score = r.similarity ? (r.similarity * 100).toFixed(0) + '%' : '';\n  const excerpt = (r.content || '').substring(0, 120).replace(/\\n/g, ' ');\n  text += (i+1) + '. *' + title + '*';\n  if (project) text += ' [' + project + ']';\n  if (score) text += ' (' + score + ')';\n  text += '\\n   ' + excerpt + '\\n\\n';\n});\nif (text.length > 4000) text = text.substring(0, 3990) + '\\n...truncated';\nreturn [{json: {response_text: text}}];"
+      },
+      "id": "e0d8e3da-9501-41fb-baab-9b76d01eda39",
+      "name": "Format Query Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/rpc/get_noel_system_stats",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {}
+      },
+      "id": "77b2d80b-b170-46f3-8e0d-a846b6419f09",
+      "name": "HTTP Stats RPC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "dzXo3zuY3CuxGiIo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst s = Array.isArray(raw) ? raw[0] : raw;\nconst text = '\\ud83d\\udcca *Noel System Stats*\\n\\n' +\n  'Total Learnings: ' + (s.total_learnings || 0) + '\\n' +\n  'Active Projects: ' + (s.active_projects || 0) + '\\n' +\n  'Total Sessions: ' + (s.total_sessions || 0) + '\\n' +\n  'Learnings This Week: ' + (s.learnings_this_week || 0) + '\\n' +\n  'Top Project: ' + (s.top_project || 'N/A');\nreturn [{json: {response_text: text}}];"
+      },
+      "id": "8a849f7f-0453-47d7-8e3e-efa11808068a",
+      "name": "Format Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sladetzgpogodrqwfamy.supabase.co/rest/v1/rpc/get_project_learning_counts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {}
+      },
+      "id": "98cb1a9d-6dd7-452d-b954-0dccec8bfb74",
+      "name": "HTTP Projects RPC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        400
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "dzXo3zuY3CuxGiIo",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst projects = Array.isArray(raw) ? raw : [raw];\nlet text = '\\ud83d\\udcc1 *Projects*\\n\\n';\nprojects.forEach(p => {\n  const name = p.project_name || 'Unknown';\n  const count = p.learning_count || 0;\n  const latest = p.latest_learning ? new Date(p.latest_learning).toLocaleDateString() : 'N/A';\n  text += '\\u2022 *' + name + '* - ' + count + ' learnings (latest: ' + latest + ')\\n';\n});\nif (text.length > 4000) text = text.substring(0, 3990) + '\\n...truncated';\nreturn [{json: {response_text: text}}];"
+      },
+      "id": "44b9e069-4765-40c8-86cd-3a9b72b5f87c",
+      "name": "Format Projects",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const cmd = $('Parse Message').item.json.command || 'unknown';\nreturn [{json: {\n  response_text: 'Unknown command: /' + cmd + '\\n\\nType /help for available commands.'\n}}];"
+      },
+      "id": "befe70ca-c296-4287-8e84-d3a76e4e0f5d",
+      "name": "Unknown Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $('Parse Message').item.json.chat_id }}",
+        "text": "={{ $json.response_text }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "6bfa1ed0-2410-40e1-8d12-f7584d62dcbc",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "yThtgY0qtsaAlq1w",
+          "name": "Noel Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $('Parse Message').item.json.chat_id }}",
+        "text": "={{ $json.error_message }}",
+        "additionalFields": {}
+      },
+      "id": "c46b6b65-140b-4d6d-ba7c-e8510a128520",
+      "name": "Send Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1540,
+        -400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "yThtgY0qtsaAlq1w",
+          "name": "Noel Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $('Parse Message').item.json.chat_id }}",
+        "text": "Unauthorized. Your chat ID is not registered.",
+        "additionalFields": {}
+      },
+      "id": "c9f0b302-1565-4003-b917-508f6e0b2fa9",
+      "name": "Send Unauthorized",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "yThtgY0qtsaAlq1w",
+          "name": "Noel Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Message": {
+      "main": [
+        [
+          {
+            "node": "Auth Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auth Check": {
+      "main": [
+        [
+          {
+            "node": "IF Authorized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Authorized": {
+      "main": [
+        [
+          {
+            "node": "Command Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Unauthorized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Command Router": {
+      "main": [
+        [
+          {
+            "node": "Help Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Capture",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Query",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Stats RPC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Projects RPC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unknown Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Help Text": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Capture": {
+      "main": [
+        [
+          {
+            "node": "IF Valid Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Valid Capture": {
+      "main": [
+        [
+          {
+            "node": "Send Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Noel Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Noel Capture": {
+      "main": [
+        [
+          {
+            "node": "Format Capture Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Capture Result": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Query": {
+      "main": [
+        [
+          {
+            "node": "IF Valid Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Valid Query": {
+      "main": [
+        [
+          {
+            "node": "Send Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Noel Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Noel Query": {
+      "main": [
+        [
+          {
+            "node": "Format Query Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Query Results": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Stats RPC": {
+      "main": [
+        [
+          {
+            "node": "Format Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Stats": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Projects RPC": {
+      "main": [
+        [
+          {
+            "node": "Format Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Projects": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unknown Command": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

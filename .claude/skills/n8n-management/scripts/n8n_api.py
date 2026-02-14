@@ -32,7 +32,7 @@ def load_env():
 
 load_env()
 
-N8N_BASE_URL = os.getenv('NGROK_URL', 'https://your-ngrok-url.ngrok-free.app')
+N8N_BASE_URL = os.getenv('N8N_API_URL', 'http://localhost:5678')
 API_KEY = os.getenv('N8N_API_KEY', 'your-n8n-api-key-here')
 
 def _make_request(url: str, method: str = "GET", data: Optional[Dict] = None) -> Dict:

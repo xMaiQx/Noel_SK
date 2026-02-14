@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Create Project API",
+    "description": "Register a new project in Noel's knowledge repository",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{ngrok-url}/webhook",
+      "description": "Development server (ngrok tunnel)",
+      "variables": {
+        "ngrok-url": {
+          "default": "your-ngrok-subdomain.ngrok.io"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/create_project": {
+      "post": {
+        "summary": "Register a new project",
+        "description": "Creates a new project entry in Notion Projects database. MUST be called before capturing learnings for a new project to ensure referential integrity.",
+        "operationId": "createProject",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              },
+              "examples": {
+                "minimal": {
+                  "summary": "Minimal project creation",
+                  "value": {
+                    "endpoint": "create_project",
+                    "name": "MyNewProject"
+                  }
+                },
+                "complete": {
+                  "summary": "Full project creation with metadata",
+                  "value": {
+                    "endpoint": "create_project",
+                    "name": "Insurance Platform",
+                    "description": "Multi-tenant insurance SaaS platform",
+                    "status": "Active",
+                    "priority": "P1-High",
+                    "tech_stack": ["React", "Node.js", "PostgreSQL", "Redis"],
+                    "repository_url": "https://github.com/company/insurance-platform",
+                    "started": "2025-01-04"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectResponse"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Successful creation",
+                    "value": {
+                      "success": true,
+                      "project_name": "Insurance Platform",
+                      "notion_page_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "message": "Project 'Insurance Platform' registered successfully"
+                    }
+                  },
+                  "already_exists": {
+                    "summary": "Project already exists",
+                    "value": {
+                      "success": true,
+                      "project_name": "Insurance Platform",
+                      "notion_page_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "message": "Project 'Insurance Platform' already exists"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Missing required field: name"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateProjectRequest": {
+        "type": "object",
+        "required": ["endpoint", "name"],
+        "properties": {
+          "endpoint": {
+            "type": "string",
+            "enum": ["create_project"],
+            "description": "Endpoint identifier for webhook routing"
+          },
+          "name": {
+            "type": "string",
+            "description": "Project name (should match git repo name or directory name)",
+            "minLength": 1,
+            "maxLength": 100,
+            "example": "Noel_SK"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief project description",
+            "maxLength": 500,
+            "example": "Knowledge repository system for persistent learning"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["Planning", "Active", "On Hold", "Completed", "Archived"],
+            "default": "Active",
+            "description": "Current project status"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["P0-Critical", "P1-High", "P2-Medium", "P3-Low"],
+            "default": "P2-Medium",
+            "description": "Project priority level"
+          },
+          "tech_stack": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Technologies used in this project",
+            "example": ["Python", "React", "PostgreSQL"]
+          },
+          "repository_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Git repository URL",
+            "example": "https://github.com/user/project"
+          },
+          "started": {
+            "type": "string",
+            "format": "date",
+            "description": "Project start date (YYYY-MM-DD). Defaults to today if not provided.",
+            "example": "2025-01-04"
+          }
+        }
+      },
+      "CreateProjectResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "project_name": {
+            "type": "string",
+            "example": "Noel_SK"
+          },
+          "notion_page_id": {
+            "type": "string",
+            "description": "Notion page ID for the created project",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "message": {
+            "type": "string",
+            "example": "Project 'Noel_SK' registered successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Missing required field: name"
+          }
+        }
+      }
+    }
+  }
+}
